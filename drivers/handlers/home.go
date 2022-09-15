@@ -16,5 +16,5 @@ func (h *Auth) HomeHandler(w http.ResponseWriter, r *http.Request) {
 		Profile:         profile,
 		IsAuthenticated: utils2.IsAuthenticated(r),
 	}
-	_ = utils2.Tpl.ExecuteTemplate(w, "home.gohtml", data)
+	_ = utils2.View.ExecuteTemplate(w, "home.gohtml", data)
 }
