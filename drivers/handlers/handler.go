@@ -16,7 +16,7 @@ func NewHandler(handler *handler.Handler, manager drivers.Manager) (*handler.Han
 		manager: manager,
 	}
 	// Serving assets
-	fs := http.FileServer(http.Dir("./ui/static"))
+	fs := http.FileServer(http.Dir("ui/static"))
 	handler.Mux.PathPrefix("/css/").Handler(fs)
 	handler.Mux.PathPrefix("/fonts/").Handler(fs)
 	handler.Mux.PathPrefix("/images/").Handler(fs)
