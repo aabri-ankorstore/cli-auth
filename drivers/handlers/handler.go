@@ -3,6 +3,8 @@ package handlers
 import (
 	"github.com/aabri-ankorstore/cli-auth/drivers"
 	"github.com/aabri-ankorstore/cli-auth/server/handler"
+	"github.com/aabri-ankorstore/cli-auth/utils"
+	"io/fs"
 	"net/http"
 )
 
@@ -16,12 +18,16 @@ func NewHandler(handler *handler.Handler, manager drivers.Manager) (*handler.Han
 		manager: manager,
 	}
 	// Serving assets
-	fs := http.FileServer(http.Dir("ui/static"))
-	handler.Mux.PathPrefix("/css/").Handler(fs)
-	handler.Mux.PathPrefix("/fonts/").Handler(fs)
-	handler.Mux.PathPrefix("/images/").Handler(fs)
-	handler.Mux.PathPrefix("/js/").Handler(fs)
-	handler.Mux.PathPrefix("/plugins/").Handler(fs)
+	fSys, err := fs.Sub(utils.Tpl, "ui/static")
+	if err != nil {
+		panic(err)
+	}
+	staticFile := http.FileServer(http.FS(fSys))
+	handler.Mux.PathPrefix("/css/").Handler(staticFile)
+	handler.Mux.PathPrefix("/fonts/").Handler(staticFile)
+	handler.Mux.PathPrefix("/images/").Handler(staticFile)
+	handler.Mux.PathPrefix("/js/").Handler(staticFile)
+	handler.Mux.PathPrefix("/plugins/").Handler(staticFile)
 	//#################
 
 	handler.Mux.HandleFunc("/", a.HomeHandler).Methods("GET")
