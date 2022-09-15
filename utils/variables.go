@@ -1,12 +1,12 @@
 package utils
 
 import (
+	"embed"
 	"github.com/gorilla/sessions"
-	"html/template"
 )
 
 var (
-	Tpl          *template.Template
+	Tpl          embed.FS
 	SessionStore *sessions.CookieStore
 	AuthDriver   string
 	ClientSECRET string
