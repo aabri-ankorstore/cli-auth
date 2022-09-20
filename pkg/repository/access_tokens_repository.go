@@ -85,10 +85,7 @@ func (c *AccessTokensRepository) Delete(ID string) error {
 	return err
 }
 func (c *AccessTokensRepository) IsAuthenticated() bool {
-	s, err := c.GetAll()
-	if err != nil {
-		panic(err)
-	}
+	s, _ := c.GetAll()
 	if len(s) > 0 {
 		return true
 	}
