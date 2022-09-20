@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/aabri-ankorstore/cli-auth/pkg/entities"
+	"github.com/aabri-ankorstore/cli-auth/utils"
 	"github.com/uptrace/bun"
 )
 
@@ -17,6 +18,7 @@ func (c *AccessTokensRepository) Get(ID string) (interface{}, error) {
 	if err := c.DB.NewSelect().Model(&accessToken).Where("account_id = ?", ID).Scan(c.Ctx); err != nil {
 		return nil, err
 	}
+	defer utils.DB.DB.(*bun.DB).DB.Close()
 	return accessToken, nil
 }
 func (c *AccessTokensRepository) GetAll() ([]interface{}, error) {
@@ -28,6 +30,7 @@ func (c *AccessTokensRepository) GetAll() ([]interface{}, error) {
 	for _, v := range accessToken {
 		data = append(data, v)
 	}
+	defer utils.DB.DB.(*bun.DB).DB.Close()
 	return data, nil
 }
 func (c *AccessTokensRepository) Insert(value interface{}) error {
@@ -40,10 +43,12 @@ func (c *AccessTokensRepository) Insert(value interface{}) error {
 				return err
 			}
 		}
+		defer utils.DB.DB.(*bun.DB).DB.Close()
 	case interface{}:
 		_, err := c.DB.NewInsert().
 			Model(value).
 			Exec(c.Ctx)
+		defer utils.DB.DB.(*bun.DB).DB.Close()
 		return err
 	default:
 		panic(errors.New("internal error"))
@@ -61,11 +66,13 @@ func (c *AccessTokensRepository) Update(value interface{}) error {
 				return err
 			}
 		}
+		defer utils.DB.DB.(*bun.DB).DB.Close()
 	case interface{}:
 		_, err := c.DB.NewUpdate().
 			Model(value).
 			WherePK().
 			Exec(c.Ctx)
+		defer utils.DB.DB.(*bun.DB).DB.Close()
 		return err
 	default:
 		panic(errors.New("internal error"))
@@ -75,5 +82,6 @@ func (c *AccessTokensRepository) Update(value interface{}) error {
 func (c *AccessTokensRepository) Delete(ID string) error {
 	accessToken := new(entities.AccessToken)
 	_, err := c.DB.NewDelete().Model(accessToken).Where("account_id = ?", ID).Exec(c.Ctx)
+	defer utils.DB.DB.(*bun.DB).DB.Close()
 	return err
 }
