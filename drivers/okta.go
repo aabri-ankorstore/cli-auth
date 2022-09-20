@@ -2,24 +2,23 @@ package drivers
 
 import (
 	"bytes"
+	"database/sql"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
 	utils2 "github.com/aabri-ankorstore/cli-auth/utils"
-	"github.com/ankorstore/ankorstore-cli-core/pkg/util"
-	"github.com/michaeljs1990/sqlitestore"
+	"github.com/gernest/qlstore"
 	verifier "github.com/okta/okta-jwt-verifier-golang"
 	"github.com/rs/zerolog/log"
 	"github.com/skratchdot/open-golang/open"
 	"io/ioutil"
 	"net/http"
-	"os"
 	"time"
 )
 
 type Okta struct {
-	SessionStore     *sqlitestore.SqliteStore
+	SessionStore     *qlstore.QLStore
 	SessionStoreName string
 	Nonce            string
 	State            string
@@ -156,18 +155,33 @@ func (g *Okta) GetProfile(r *http.Request) (map[string]string, error) {
 
 func init() {
 	var err error
-	dirs := util.NewDirs()
-	authDir := fmt.Sprintf("%s/%s", dirs.GetPluginsDir(), utils2.PluginPath)
-	if _, err := os.Stat(authDir); os.IsNotExist(err) {
-		authDir = "."
-	}
-	utils2.SessionStore, err = sqlitestore.NewSqliteStore(
-		fmt.Sprintf("%s/auth", authDir),
-		"sessions",
-		"/",
-		3600,
-		[]byte(utils2.CookieName))
+	db, err := sql.Open("ql-mem", "auth.db")
 	if err != nil {
 		panic(err)
 	}
+
+	// This is a convenient helper. It creates the session table if the table
+	// doesn't exist yet.
+	err = qlstore.Migrate(db)
+	if err != nil {
+		panic(err)
+	}
+
+	utils2.SessionStore = qlstore.NewQLStore(db, "/", 2592000, utils2.KeyPair...)
+
+	//dirs := util.NewDirs()
+	//authDir := fmt.Sprintf("%s/%s", dirs.GetPluginsDir(), utils2.PluginPath)
+	//if _, err := os.Stat(authDir); os.IsNotExist(err) {
+	//	authDir = "."
+	//}
+	//utils2.SessionStore, err = sqlitestore.NewSqliteStore(
+	//	fmt.Sprintf("%s/auth", authDir),
+	//	"sessions",
+	//	"/",
+	//	3600,
+	//	[]byte(utils2.CookieName))
+	//
+	//if err != nil {
+	//	panic(err)
+	//}
 }

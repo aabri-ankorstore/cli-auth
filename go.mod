@@ -19,6 +19,7 @@ require (
 	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.0-20210816181553-5444fa50b93d // indirect
 	github.com/emirpasic/gods v1.12.0 // indirect
+	github.com/gernest/qlstore v0.0.0-20161224085350-646d93e25ad3 // indirect
 	github.com/ghodss/yaml v1.0.0 // indirect
 	github.com/go-logr/logr v1.2.0 // indirect
 	github.com/goccy/go-json v0.9.4 // indirect
