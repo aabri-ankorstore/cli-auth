@@ -4,10 +4,8 @@ go 1.18
 
 require (
 	github.com/ankorstore/ankorstore-cli-core v0.1.7
-	github.com/cznic/ql v1.2.0
 	github.com/go-errors/errors v1.4.2
 	github.com/gorilla/mux v1.8.0
-	github.com/gorilla/securecookie v1.1.1
 	github.com/gorilla/sessions v1.2.1
 	github.com/okta/okta-jwt-verifier-golang v1.3.1
 	github.com/rs/zerolog v1.28.0
@@ -19,17 +17,7 @@ require (
 require (
 	github.com/blang/semver v3.5.1+incompatible // indirect
 	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e // indirect
-	github.com/cznic/b v0.0.0-20180115125044-35e9bbe41f07 // indirect
-	github.com/cznic/fileutil v0.0.0-20180108211300-6a051e75936f // indirect
-	github.com/cznic/golex v0.0.0-20170803123110-4ab7c5e190e4 // indirect
-	github.com/cznic/internal v0.0.0-20180608152220-f44710a21d00 // indirect
-	github.com/cznic/lldb v1.1.0 // indirect
-	github.com/cznic/mathutil v0.0.0-20180504122225-ca4c9f2c1369 // indirect
-	github.com/cznic/sortutil v0.0.0-20150617083342-4c7342852e65 // indirect
-	github.com/cznic/strutil v0.0.0-20171016134553-529a34b1c186 // indirect
-	github.com/cznic/zappy v0.0.0-20160723133515-2533cb5b45cc // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.0-20210816181553-5444fa50b93d // indirect
-	github.com/edsrzf/mmap-go v0.0.0-20170320065105-0bce6a688712 // indirect
 	github.com/emirpasic/gods v1.12.0 // indirect
 	github.com/ghodss/yaml v1.0.0 // indirect
 	github.com/go-logr/logr v1.2.0 // indirect
@@ -37,6 +25,7 @@ require (
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/google/gofuzz v1.1.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
+	github.com/gorilla/securecookie v1.1.1 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect

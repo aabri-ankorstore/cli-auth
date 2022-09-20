@@ -3,13 +3,14 @@ package utils
 import (
 	"embed"
 	"github.com/ankorstore/ankorstore-cli-core/pkg/plugin"
+	"github.com/gorilla/sessions"
 	"html/template"
 )
 
 var (
 	Tpl          embed.FS
 	View         *template.Template
-	SessionStore *AuthStore
+	SessionStore *sessions.CookieStore
 	AuthDriver   string
 	ClientSECRET string
 	ISSUER       string

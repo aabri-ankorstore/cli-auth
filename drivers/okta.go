@@ -2,13 +2,12 @@ package drivers
 
 import (
 	"bytes"
-	"database/sql"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
 	utils2 "github.com/aabri-ankorstore/cli-auth/utils"
-	_ "github.com/cznic/ql/driver"
+	"github.com/gorilla/sessions"
 	verifier "github.com/okta/okta-jwt-verifier-golang"
 	"github.com/rs/zerolog/log"
 	"github.com/skratchdot/open-golang/open"
@@ -18,7 +17,7 @@ import (
 )
 
 type Okta struct {
-	SessionStore     *utils2.AuthStore
+	SessionStore     *sessions.CookieStore
 	SessionStoreName string
 	Nonce            string
 	State            string
@@ -154,34 +153,5 @@ func (g *Okta) GetProfile(r *http.Request) (map[string]string, error) {
 }
 
 func init() {
-	var err error
-	db, err := sql.Open("ql-mem", "testing.db")
-	if err != nil {
-		panic(err)
-	}
-
-	// This is a convenient helper. It creates the session table if the table
-	// doesn't exist yet.
-	err = utils2.Migrate(db)
-	if err != nil {
-		panic(err)
-	}
-
-	utils2.SessionStore = utils2.NewAuthStore(db, "/", 2592000, utils2.KeyPair...)
-
-	//dirs := util.NewDirs()
-	//authDir := fmt.Sprintf("%s/%s", dirs.GetPluginsDir(), utils2.PluginPath)
-	//if _, err := os.Stat(authDir); os.IsNotExist(err) {
-	//	authDir = "."
-	//}
-	//utils2.SessionStore, err = sqlitestore.NewSqliteStore(
-	//	fmt.Sprintf("%s/auth", authDir),
-	//	"sessions",
-	//	"/",
-	//	3600,
-	//	[]byte(utils2.CookieName))
-	//
-	//if err != nil {
-	//	panic(err)
-	//}
+	utils2.SessionStore = sessions.NewCookieStore([]byte(utils2.CookieName))
 }
