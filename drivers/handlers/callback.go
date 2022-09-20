@@ -8,6 +8,7 @@ import (
 	utils2 "github.com/aabri-ankorstore/cli-auth/utils"
 	"github.com/rs/zerolog/log"
 	"net/http"
+	"strings"
 )
 
 func (h *Auth) CallBackHandler(w http.ResponseWriter, r *http.Request) {
@@ -31,7 +32,7 @@ func (h *Auth) CallBackHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	var accountID string
 	accountID = profile["email"]
-	if len(accountID) < 0 {
+	if empty(accountID) {
 		accountID = profile["name"]
 	}
 	accessToken := entities.AccessToken{
@@ -44,4 +45,8 @@ func (h *Auth) CallBackHandler(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 	http.Redirect(w, r, "/", http.StatusFound)
+}
+
+func empty(s string) bool {
+	return len(strings.TrimSpace(s)) == 0
 }
