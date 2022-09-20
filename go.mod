@@ -4,9 +4,10 @@ go 1.18
 
 require (
 	github.com/ankorstore/ankorstore-cli-core v0.1.7
+	github.com/cznic/ql v1.2.0
+	github.com/gernest/qlstore v0.0.0-20161224085350-646d93e25ad3
 	github.com/go-errors/errors v1.4.2
 	github.com/gorilla/mux v1.8.0
-	github.com/michaeljs1990/sqlitestore v0.0.0-20210507162135-8585425bc864
 	github.com/okta/okta-jwt-verifier-golang v1.3.1
 	github.com/rs/zerolog v1.28.0
 	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966
@@ -23,14 +24,12 @@ require (
 	github.com/cznic/internal v0.0.0-20180608152220-f44710a21d00 // indirect
 	github.com/cznic/lldb v1.1.0 // indirect
 	github.com/cznic/mathutil v0.0.0-20180504122225-ca4c9f2c1369 // indirect
-	github.com/cznic/ql v1.2.0 // indirect
 	github.com/cznic/sortutil v0.0.0-20150617083342-4c7342852e65 // indirect
 	github.com/cznic/strutil v0.0.0-20171016134553-529a34b1c186 // indirect
 	github.com/cznic/zappy v0.0.0-20160723133515-2533cb5b45cc // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.0-20210816181553-5444fa50b93d // indirect
 	github.com/edsrzf/mmap-go v0.0.0-20170320065105-0bce6a688712 // indirect
 	github.com/emirpasic/gods v1.12.0 // indirect
-	github.com/gernest/qlstore v0.0.0-20161224085350-646d93e25ad3 // indirect
 	github.com/ghodss/yaml v1.0.0 // indirect
 	github.com/go-logr/logr v1.2.0 // indirect
 	github.com/goccy/go-json v0.9.4 // indirect
@@ -52,7 +51,6 @@ require (
 	github.com/manifoldco/promptui v0.9.0 // indirect
 	github.com/mattn/go-colorable v0.1.12 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
-	github.com/mattn/go-sqlite3 v1.14.15 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect

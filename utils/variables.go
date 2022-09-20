@@ -19,7 +19,7 @@ var (
 	CookieName   = "session-name"
 	State        = "none"
 	Nonce        = "NonceNotSetYet"
-	PluginRepo   = "https://github.com/ankorstore/ankorstore-plugin-cypress"
+	PluginRepo   = "https://github.com/ankorstore/ankor-auth-plugin"
 	PluginPath   = plugin.Encode(PluginRepo)
 )
 
