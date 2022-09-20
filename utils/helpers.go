@@ -16,19 +16,15 @@ func IsAuthenticated(r *http.Request) bool {
 }
 
 func IsAuthenticatedViaWeb() bool {
-	req, reqerr := http.NewRequest("GET", "http://localhost:8080/is-authenticated", nil)
-	if reqerr != nil {
-		return false
+
+	resp, err := http.Get("http://localhost:8080/is-authenticated")
+	if err != nil {
+		panic(err)
 	}
-	req.Header.Set("Content-Type", "application/json")
-
-	client := &http.Client{}
-	resp, _ := client.Do(req)
-	decoder := json.NewDecoder(resp.Body)
 	defer resp.Body.Close()
-
+	decoder := json.NewDecoder(resp.Body)
 	type status struct {
-		IsAuthenticated bool `json:"IsAuthenticated,omitempty"`
+		IsAuthenticated bool `json:"IsAuthenticated"`
 	}
 	var data status
 	_ = decoder.Decode(&data)
