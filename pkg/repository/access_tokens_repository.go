@@ -84,3 +84,13 @@ func (c *AccessTokensRepository) Delete(ID string) error {
 	_, err := c.DB.NewDelete().Model(accessToken).Where("account_id = ?", ID).Exec(c.Ctx)
 	return err
 }
+func (c *AccessTokensRepository) IsAuthenticated() bool {
+	s, err := c.GetAll()
+	if err != nil {
+		panic(err)
+	}
+	if len(s) > 0 {
+		return true
+	}
+	return false
+}

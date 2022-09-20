@@ -6,4 +6,5 @@ type Repository interface {
 	Insert(value interface{}) error
 	Update(ID string, data interface{}, query string) error
 	Delete(ID string) error
+	IsAuthenticated() bool
 }
