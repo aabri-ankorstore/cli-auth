@@ -1,5 +1,6 @@
 package repository
 
+import "C"
 import (
 	"context"
 	"errors"
@@ -85,8 +86,9 @@ func (c *AccessTokensRepository) Delete(ID string) error {
 	return err
 }
 func (c *AccessTokensRepository) IsAuthenticated() bool {
-	s, _ := c.GetAll()
-	if len(s) > 0 {
+	var accessToken entities.AccessToken
+	count, _ := c.DB.NewSelect().Model(accessToken).Count(c.Ctx)
+	if count > 0 {
 		return true
 	}
 	return false
