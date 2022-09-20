@@ -90,7 +90,12 @@ func (g *Github) ExchangeCode(w http.ResponseWriter, r *http.Request) (Exchange,
 
 	//session.Values["id_token"] = exchange.IdToken
 	session.Values["access_token"] = exchange.AccessToken
-	_ = session.Save(r, w)
+	err = session.Save(r, w)
+	if err != nil {
+		return Exchange{}, err
+	}
+	// save access token
+
 	return exchange, nil
 }
 func (g *Github) VerifyToken(t string) (*verifier.Jwt, error) {

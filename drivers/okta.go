@@ -104,7 +104,11 @@ func (g *Okta) ExchangeCode(w http.ResponseWriter, r *http.Request) (Exchange, e
 		}
 		session.Values["id_token"] = exchange.IdToken
 		session.Values["access_token"] = exchange.AccessToken
-		session.Save(r, w)
+		err = session.Save(r, w)
+		if err != nil {
+			return Exchange{}, err
+		}
+		// save access token into access_tokens
 	}
 
 	return exchange, nil
