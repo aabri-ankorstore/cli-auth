@@ -23,6 +23,8 @@ func (h *Auth) CallBackHandler(w http.ResponseWriter, r *http.Request) {
 		Ctx: context.Background(),
 	}
 	profile, er := h.manager.GetProfile(r)
+
+	fmt.Println(fmt.Sprintf("%v", profile))
 	if er != nil {
 		log.Info().Err(er)
 		return
