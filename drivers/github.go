@@ -52,6 +52,7 @@ func (g *Github) InformUserAndOpenBrowser() error {
 	return nil
 }
 func (g *Github) ExchangeCode(w http.ResponseWriter, r *http.Request) (Exchange, error) {
+	utils2.HttpRequest = r
 	// Check the state that was returned to the query string is the same as the above state
 	if r.URL.Query().Get("state") != utils2.State {
 		fmt.Fprintln(w, "The state was not as expected")
@@ -119,6 +120,7 @@ func (g *Github) VerifyToken(t string) (*verifier.Jwt, error) {
 	return nil, fmt.Errorf("token could not be verified: %s", "")
 }
 func (g *Github) GetProfile(r *http.Request) (map[string]string, error) {
+	utils2.HttpRequest = r
 	m := make(map[string]string)
 	session, err := utils2.SessionStore.Get(r, utils2.CookieName)
 	if err != nil || session.Values["access_token"] == nil || session.Values["access_token"] == "" {
@@ -144,4 +146,9 @@ func (g *Github) GetProfile(r *http.Request) (map[string]string, error) {
 
 func init() {
 	utils2.SessionStore = sessions.NewCookieStore([]byte(utils2.CookieName))
+	utils2.SessionStore.Options = &sessions.Options{
+		Path:     "/",      // to match all requests
+		MaxAge:   3600 * 1, // 1 hour
+		HttpOnly: true,
+	}
 }

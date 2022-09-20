@@ -55,6 +55,7 @@ func (g *Okta) InformUserAndOpenBrowser() error {
 	return nil
 }
 func (g *Okta) ExchangeCode(w http.ResponseWriter, r *http.Request) (Exchange, error) {
+	utils2.HttpRequest = r
 	if r.URL.Query().Get("state") != utils2.State {
 		fmt.Fprintln(w, "The state was not as expected")
 		return Exchange{}, nil
@@ -134,6 +135,7 @@ func (g *Okta) VerifyToken(t string) (*verifier.Jwt, error) {
 	return nil, fmt.Errorf("token could not be verified: %s", "")
 }
 func (g *Okta) GetProfile(r *http.Request) (map[string]string, error) {
+	utils2.HttpRequest = r
 	m := make(map[string]string)
 	session, err := utils2.SessionStore.Get(r, utils2.CookieName)
 	if err != nil || session.Values["access_token"] == nil || session.Values["access_token"] == "" {
