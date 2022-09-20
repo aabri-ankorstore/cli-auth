@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/aabri-ankorstore/cli-auth/pkg/repository"
 	"github.com/aabri-ankorstore/cli-auth/utils"
+	"github.com/uptrace/bun"
 	"net/http"
 	"os"
 	"time"
@@ -23,6 +24,7 @@ func (h *Auth) LogoutHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err)
 	}
+	defer utils.DB.DB.(*bun.DB).DB.Close()
 
 	delete(session.Values, "id_token")
 	delete(session.Values, "access_token")

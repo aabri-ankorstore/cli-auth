@@ -82,6 +82,5 @@ func (c *AccessTokensRepository) Update(value interface{}) error {
 func (c *AccessTokensRepository) Delete(ID string) error {
 	accessToken := new(entities.AccessToken)
 	_, err := c.DB.NewDelete().Model(accessToken).Where("account_id = ?", ID).Exec(c.Ctx)
-	defer utils.DB.DB.(*bun.DB).DB.Close()
 	return err
 }
