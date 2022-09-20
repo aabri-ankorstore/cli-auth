@@ -2,17 +2,12 @@ package drivers
 
 import (
 	"fmt"
-	"github.com/aabri-ankorstore/cli-auth/pkg/database/adapters/sqlite"
 	verifier "github.com/okta/okta-jwt-verifier-golang"
 	"net/http"
 )
 
 const (
 	host string = "http://localhost"
-)
-
-var (
-	db *sqlite.SqliteDB
 )
 
 type Manager interface {
