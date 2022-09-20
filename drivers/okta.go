@@ -2,14 +2,10 @@ package drivers
 
 import (
 	"bytes"
-	"context"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/aabri-ankorstore/cli-auth/pkg/database/adapters/sqlite"
-	"github.com/aabri-ankorstore/cli-auth/pkg/entities"
-	"github.com/aabri-ankorstore/cli-auth/pkg/repository"
 	utils2 "github.com/aabri-ankorstore/cli-auth/utils"
 	"github.com/gorilla/sessions"
 	verifier "github.com/okta/okta-jwt-verifier-golang"
@@ -112,20 +108,6 @@ func (g *Okta) ExchangeCode(w http.ResponseWriter, r *http.Request) (Exchange, e
 		if err != nil {
 			return Exchange{}, err
 		}
-		// save access token
-		repo := repository.AccessTokensRepository{
-			DB:  utils2.DB.DB,
-			Ctx: context.Background(),
-		}
-		accessToken := entities.AccessToken{
-			AccountID:   "amineabri@gmail.com",
-			AccessToken: exchange.AccessToken,
-			IdToken:     "123",
-		}
-		err = repo.Insert(&accessToken)
-		if err != nil {
-			return Exchange{}, err
-		}
 	}
 
 	return exchange, nil
@@ -177,21 +159,5 @@ func init() {
 		Path:     "/",      // to match all requests
 		MaxAge:   3600 * 1, // 1 hour
 		HttpOnly: true,
-	}
-}
-func init() {
-	// Initialize db for migrations
-	var err error
-	utils2.DB, err = sqlite.InitDB(false)
-	if err != nil {
-		log.Printf("failed to initialize db", "err", err)
-	}
-}
-func init() {
-	// Run migration
-	ctx := context.Background()
-	// Run migrations.
-	if err := utils2.DB.RunMigrations(ctx); err != nil {
-		log.Printf("failed to migrate DB: %w", err)
 	}
 }

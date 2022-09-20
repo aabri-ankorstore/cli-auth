@@ -1,7 +1,11 @@
 package handlers
 
 import (
+	"context"
 	"fmt"
+	"github.com/aabri-ankorstore/cli-auth/pkg/entities"
+	"github.com/aabri-ankorstore/cli-auth/pkg/repository"
+	utils2 "github.com/aabri-ankorstore/cli-auth/utils"
 	"net/http"
 )
 
@@ -11,6 +15,20 @@ func (h *Auth) CallBackHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(e.Error)
 		fmt.Println(e.ErrorDescription)
 		return
+	}
+	// save access token
+	repo := repository.AccessTokensRepository{
+		DB:  utils2.DB.DB,
+		Ctx: context.Background(),
+	}
+	accessToken := entities.AccessToken{
+		AccountID:   "amineabri@gmail.com",
+		AccessToken: e.AccessToken,
+		IdToken:     "123",
+	}
+	err := repo.Insert(&accessToken)
+	if err != nil {
+		panic(err)
 	}
 	http.Redirect(w, r, "/", http.StatusFound)
 }
