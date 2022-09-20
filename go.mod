@@ -5,9 +5,10 @@ go 1.18
 require (
 	github.com/ankorstore/ankorstore-cli-core v0.1.7
 	github.com/cznic/ql v1.2.0
-	github.com/gernest/qlstore v0.0.0-20161224085350-646d93e25ad3
 	github.com/go-errors/errors v1.4.2
 	github.com/gorilla/mux v1.8.0
+	github.com/gorilla/securecookie v1.1.1
+	github.com/gorilla/sessions v1.2.1
 	github.com/okta/okta-jwt-verifier-golang v1.3.1
 	github.com/rs/zerolog v1.28.0
 	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966
@@ -36,8 +37,6 @@ require (
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/google/gofuzz v1.1.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
-	github.com/gorilla/securecookie v1.1.1 // indirect
-	github.com/gorilla/sessions v1.2.1 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect

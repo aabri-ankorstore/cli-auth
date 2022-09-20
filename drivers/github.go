@@ -7,7 +7,6 @@ import (
 	"fmt"
 	utils2 "github.com/aabri-ankorstore/cli-auth/utils"
 	_ "github.com/cznic/ql/driver"
-	"github.com/gernest/qlstore"
 	"github.com/go-errors/errors"
 	verifier "github.com/okta/okta-jwt-verifier-golang"
 	"github.com/rs/zerolog/log"
@@ -18,7 +17,7 @@ import (
 )
 
 type Github struct {
-	SessionStore     *qlstore.QLStore
+	SessionStore     *utils2.AuthStore
 	SessionStoreName string
 	Nonce            string
 	State            string
@@ -148,9 +147,9 @@ func init() {
 
 	// This is a convenient helper. It creates the session table if the table
 	// doesn't exist yet.
-	err = qlstore.Migrate(db)
+	err = utils2.Migrate(db)
 	if err != nil {
 		panic(err)
 	}
-	utils2.SessionStore = qlstore.NewQLStore(db, "/", 2592000, utils2.KeyPair...)
+	utils2.SessionStore = utils2.NewAuthStore(db, "/", 2592000, utils2.KeyPair...)
 }
