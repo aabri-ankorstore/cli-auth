@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/aabri-ankorstore/cli-auth/utils"
 	"net/http"
+	"os"
 )
 
 func (h *Auth) LogoutHandler(w http.ResponseWriter, r *http.Request) {
@@ -19,4 +20,5 @@ func (h *Auth) LogoutHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Good Bye")
 
 	http.Redirect(w, r, "/", http.StatusFound)
+	os.Exit(0)
 }
