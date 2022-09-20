@@ -2,14 +2,14 @@ package utils
 
 import (
 	"embed"
-	"github.com/gorilla/sessions"
+	"github.com/michaeljs1990/sqlitestore"
 	"html/template"
 )
 
 var (
 	Tpl          embed.FS
 	View         *template.Template
-	SessionStore *sessions.CookieStore
+	SessionStore *sqlitestore.SqliteStore
 	AuthDriver   string
 	ClientSECRET string
 	ISSUER       string

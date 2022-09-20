@@ -2,6 +2,7 @@ package handlers
 
 import (
 	utils2 "github.com/aabri-ankorstore/cli-auth/utils"
+	"log"
 	"net/http"
 )
 
@@ -16,5 +17,8 @@ func (h *Auth) HomeHandler(w http.ResponseWriter, r *http.Request) {
 		Profile:         profile,
 		IsAuthenticated: utils2.IsAuthenticated(r),
 	}
-	_ = utils2.View.ExecuteTemplate(w, "home.gohtml", data)
+	err := utils2.View.ExecuteTemplate(w, "home.gohtml", data)
+	if err != nil {
+		log.Fatalln(err)
+	}
 }
