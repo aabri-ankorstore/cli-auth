@@ -16,7 +16,7 @@ var (
 	ISSUER       string
 	RedirectUri  string
 	ClientID     string
-	CookieName   = "session-name"
+	CookieName   = "login-session-store"
 	State        = "none"
 	Nonce        = "NonceNotSetYet"
 	PluginRepo   = "https://github.com/ankorstore/ankor-auth-plugin"
