@@ -149,4 +149,6 @@ func init() {
 		MaxAge:   3600 * 1, // 1 hour
 		HttpOnly: true,
 	}
+	// Run migration
+	utils2.RunMigration()
 }
