@@ -42,6 +42,18 @@ func (h *Auth) CallBackHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err)
 	}
+
+	session, err := utils2.SessionStore.Get(r, utils2.CookieName)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	session.Values["account_id"] = accountID
+	err = session.Save(r, w)
+	if err != nil {
+		log.Debug().Err(err)
+		return
+	}
+
 	http.Redirect(w, r, "/", http.StatusFound)
 }
 
