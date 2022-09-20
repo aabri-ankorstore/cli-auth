@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/aabri-ankorstore/cli-auth/pkg/database/adapters/sqlite"
 	"github.com/aabri-ankorstore/cli-auth/pkg/entities"
 	"github.com/aabri-ankorstore/cli-auth/pkg/repository"
 	utils2 "github.com/aabri-ankorstore/cli-auth/utils"
@@ -176,5 +177,13 @@ func init() {
 		Path:     "/",      // to match all requests
 		MaxAge:   3600 * 1, // 1 hour
 		HttpOnly: true,
+	}
+}
+func init() {
+	// Initialize db for migrations
+	var err error
+	utils2.DB, err = sqlite.InitDB(false)
+	if err != nil {
+		log.Printf("failed to initialize db", "err", err)
 	}
 }
