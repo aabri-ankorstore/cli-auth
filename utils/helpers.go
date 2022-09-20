@@ -28,7 +28,7 @@ func IsAuthenticatedViaWeb() bool {
 	decoder := json.NewDecoder(resp.Body)
 	defer resp.Body.Close()
 	type status struct {
-		IsAuthenticated bool
+		IsAuthenticated bool `json:"IsAuthenticated,omitempty"`
 	}
 	var data status
 	_ = decoder.Decode(&data)
