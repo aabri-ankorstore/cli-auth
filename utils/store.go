@@ -115,7 +115,7 @@ func (db *AuthStore) Save(r *http.Request, w http.ResponseWriter, session *sessi
 
 //load fetches a session by ID from the database and decodes its content into session.Values
 func (db *AuthStore) load(session *sessions.Session) error {
-	s := qlSession{Key: session.ID}
+	s := authSession{Key: session.ID}
 	err := s.FindByKey(db.store)
 	if err != nil {
 		return err
@@ -140,7 +140,7 @@ func (db *AuthStore) save(session *sessions.Session) error {
 			expiresOn = time.Now().Add(time.Second * time.Duration(session.Options.MaxAge))
 		}
 	}
-	s := qlSession{
+	s := authSession{
 		Key:       session.ID,
 		Data:      []byte(encoded),
 		ExpiresOn: expiresOn,
@@ -158,92 +158,13 @@ func (db *AuthStore) destroy(r *http.Request, w http.ResponseWriter, session *se
 	for k := range session.Values {
 		delete(session.Values, k)
 	}
-	s := qlSession{Key: session.ID}
+	s := authSession{Key: session.ID}
 	return s.Delete(db.store)
 }
 
 // Delete deletes session.
 func (db *AuthStore) Delete(r *http.Request, w http.ResponseWriter, session *sessions.Session) error {
 	return db.destroy(r, w, session)
-}
-
-//qlSession stores http session information.
-type qlSession struct {
-	Key       string
-	Data      []byte
-	CreatedOn time.Time
-	UpdatedOn time.Time
-	ExpiresOn time.Time
-}
-
-func (s *qlSession) Create(db *sql.DB) error {
-	var query = `
-	BEGIN TRANSACTION;
-	  INSERT INTO sessions  (key, data, created_on, updated_on, expires_on)
-		VALUES ($1,$2,now(),now(),$3);
-	COMMIT;
-	`
-	tx, err := db.Begin()
-	if err != nil {
-		return err
-	}
-	_, err = tx.Exec(query, s.Key, s.Data, s.ExpiresOn)
-	if err != nil {
-		return err
-	}
-	return tx.Commit()
-}
-
-func (s *qlSession) FindByKey(db *sql.DB) error {
-	var query = `
-	SELECT * from sessions  WHERE key=$1 LIMIT 1;
-	`
-	return db.QueryRow(query, s.Key).Scan(
-		&s.Key,
-		&s.Data,
-		&s.CreatedOn,
-		&s.UpdatedOn,
-		&s.ExpiresOn,
-	)
-}
-
-func (s *qlSession) Update(db *sql.DB) error {
-	var query = `
-BEGIN TRANSACTION;
-  UPDATE sessions
-    data = $2,
-    updated_on = now(),
-  WHERE key=$1;
-COMMIT;
-	`
-
-	tx, err := db.Begin()
-	if err != nil {
-		return err
-	}
-	_, err = tx.Exec(query, s.Key, s.Data)
-	if err != nil {
-		return err
-	}
-	return tx.Commit()
-}
-
-func (s *qlSession) Delete(db *sql.DB) error {
-	var query = `
-BEGIN TRANSACTION;
-   DELETE FROM sessions
-  WHERE key=$1;
-COMMIT;
-`
-	tx, err := db.Begin()
-	if err != nil {
-		return err
-	}
-	_, err = tx.Exec(query, s.Key)
-	if err != nil {
-		return err
-	}
-	return tx.Commit()
 }
 
 //Migrate creates the session table if the table does not exist yet.
