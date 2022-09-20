@@ -6,6 +6,7 @@ import (
 	"github.com/aabri-ankorstore/cli-auth/pkg/entities"
 	"github.com/aabri-ankorstore/cli-auth/pkg/repository"
 	utils2 "github.com/aabri-ankorstore/cli-auth/utils"
+	"github.com/rs/zerolog/log"
 	"net/http"
 )
 
@@ -21,7 +22,11 @@ func (h *Auth) CallBackHandler(w http.ResponseWriter, r *http.Request) {
 		DB:  utils2.DB.DB,
 		Ctx: context.Background(),
 	}
-	profile, _ := h.manager.GetProfile(r)
+	profile, er := h.manager.GetProfile(r)
+	if er != nil {
+		log.Info().Err(er)
+		return
+	}
 	accessToken := entities.AccessToken{
 		AccountID:   profile["email"],
 		AccessToken: e.AccessToken,
