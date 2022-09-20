@@ -157,4 +157,9 @@ func (g *Okta) GetProfile(r *http.Request) (map[string]string, error) {
 
 func init() {
 	utils2.SessionStore = sessions.NewCookieStore([]byte(utils2.CookieName))
+	utils2.SessionStore.Options = &sessions.Options{
+		Path:     "/",      // to match all requests
+		MaxAge:   3600 * 1, // 1 hour
+		HttpOnly: true,
+	}
 }
