@@ -2,9 +2,8 @@ package utils
 
 import (
 	"bytes"
-	"fmt"
+	"encoding/json"
 	"github.com/rs/zerolog/log"
-	"io/ioutil"
 	"net/http"
 )
 
@@ -26,9 +25,13 @@ func IsAuthenticatedViaWeb() bool {
 
 	client := &http.Client{}
 	resp, _ := client.Do(req)
-	body, _ := ioutil.ReadAll(resp.Body)
+	decoder := json.NewDecoder(resp.Body)
 	defer resp.Body.Close()
+	type status struct {
+		IsAuthenticated bool
+	}
+	var data status
+	_ = decoder.Decode(&data)
 
-	fmt.Println(body)
-	return true
+	return data.IsAuthenticated
 }
