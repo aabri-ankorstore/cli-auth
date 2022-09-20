@@ -2,10 +2,13 @@ package drivers
 
 import (
 	"bytes"
+	"context"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/aabri-ankorstore/cli-auth/pkg/entities"
+	"github.com/aabri-ankorstore/cli-auth/pkg/repository"
 	utils2 "github.com/aabri-ankorstore/cli-auth/utils"
 	"github.com/gorilla/sessions"
 	verifier "github.com/okta/okta-jwt-verifier-golang"
@@ -108,7 +111,21 @@ func (g *Okta) ExchangeCode(w http.ResponseWriter, r *http.Request) (Exchange, e
 		if err != nil {
 			return Exchange{}, err
 		}
-		// save access token into access_tokens
+		// save access token
+		repo := repository.AccessTokensRepository{
+			DB:  db.DB,
+			Ctx: context.Background(),
+		}
+		err = repo.Insert(entities.AccessToken{
+			AccountID:   "def123",
+			AccessToken: exchange.AccessToken,
+			TokenExpiry: "",
+			RaptToken:   "",
+			IdToken:     exchange.IdToken,
+		})
+		if err != nil {
+			return Exchange{}, err
+		}
 	}
 
 	return exchange, nil
@@ -154,7 +171,6 @@ func (g *Okta) GetProfile(r *http.Request) (map[string]string, error) {
 	_ = json.Unmarshal(body, &m)
 	return m, nil
 }
-
 func init() {
 	utils2.SessionStore = sessions.NewCookieStore([]byte(utils2.CookieName))
 	utils2.SessionStore.Options = &sessions.Options{

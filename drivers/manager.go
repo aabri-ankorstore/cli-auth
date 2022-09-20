@@ -14,6 +14,11 @@ const (
 	host string = "http://localhost"
 )
 
+var (
+	db  *sqlite.SqliteDB
+	con *sqlite.SqliteDB
+)
+
 type Manager interface {
 	InformUserAndOpenBrowser() error
 	ExchangeCode(w http.ResponseWriter, r *http.Request) (Exchange, error)
@@ -32,6 +37,12 @@ func GetAuth(authType string) (Manager, error) {
 	}
 }
 func init() {
+	// Initialize db
+	con, err := sqlite.InitDB(false)
+	if err != nil {
+		log.Printf("failed to initialize db", "err", err)
+	}
+	db = con
 	// Run migration
 	runMigration()
 }

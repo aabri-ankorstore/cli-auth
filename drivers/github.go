@@ -2,8 +2,11 @@ package drivers
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/aabri-ankorstore/cli-auth/pkg/entities"
+	"github.com/aabri-ankorstore/cli-auth/pkg/repository"
 	utils2 "github.com/aabri-ankorstore/cli-auth/utils"
 	"github.com/go-errors/errors"
 	"github.com/gorilla/sessions"
@@ -95,7 +98,20 @@ func (g *Github) ExchangeCode(w http.ResponseWriter, r *http.Request) (Exchange,
 		return Exchange{}, err
 	}
 	// save access token
-
+	repo := repository.AccessTokensRepository{
+		DB:  db.DB,
+		Ctx: context.Background(),
+	}
+	err = repo.Insert(entities.AccessToken{
+		AccountID:   "abc123",
+		AccessToken: exchange.AccessToken,
+		TokenExpiry: "",
+		RaptToken:   "",
+		IdToken:     "",
+	})
+	if err != nil {
+		return Exchange{}, err
+	}
 	return exchange, nil
 }
 func (g *Github) VerifyToken(t string) (*verifier.Jwt, error) {
