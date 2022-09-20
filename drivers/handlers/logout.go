@@ -7,6 +7,7 @@ import (
 	"github.com/ankorstore/ankorstore-cli-core/pkg/util"
 	"net/http"
 	"os"
+	"time"
 )
 
 func (h *Auth) LogoutHandler(w http.ResponseWriter, r *http.Request) {
@@ -25,4 +26,6 @@ func (h *Auth) LogoutHandler(w http.ResponseWriter, r *http.Request) {
 	session.Save(r, w)
 
 	http.Redirect(w, r, "/", http.StatusFound)
+	time.Sleep(3 * time.Second)
+	os.Exit(0)
 }
