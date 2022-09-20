@@ -3,7 +3,6 @@ package utils
 import (
 	"embed"
 	"github.com/aabri-ankorstore/cli-auth/pkg/database/adapters/sqlite"
-	"github.com/ankorstore/ankorstore-cli-core/pkg/plugin"
 	"github.com/gorilla/sessions"
 	"html/template"
 )
@@ -20,7 +19,5 @@ var (
 	CookieName   = "login-session-store"
 	State        = "none"
 	Nonce        = "NonceNotSetYet"
-	PluginRepo   = "https://github.com/ankorstore/ankor-auth-plugin"
-	PluginPath   = plugin.Encode(PluginRepo)
 	DB           *sqlite.SqliteDB
 )
