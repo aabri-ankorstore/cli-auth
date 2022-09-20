@@ -33,7 +33,7 @@ func (h *Auth) CallBackHandler(w http.ResponseWriter, r *http.Request) {
 	var accountID string
 	accountID = profile["email"]
 	if empty(accountID) {
-		accountID = profile["name"]
+		accountID = profile["login"]
 	}
 	accessToken := entities.AccessToken{
 		AccountID:   accountID,
