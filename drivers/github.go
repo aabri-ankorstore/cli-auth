@@ -6,7 +6,7 @@ import (
 	"fmt"
 	utils2 "github.com/aabri-ankorstore/cli-auth/utils"
 	"github.com/go-errors/errors"
-	"github.com/gorilla/sessions"
+	"github.com/michaeljs1990/sqlitestore"
 	verifier "github.com/okta/okta-jwt-verifier-golang"
 	"github.com/rs/zerolog/log"
 	"github.com/skratchdot/open-golang/open"
@@ -16,14 +16,14 @@ import (
 )
 
 type Github struct {
-	SessionStore     *sessions.CookieStore
+	SessionStore     *sqlitestore.SqliteStore
 	SessionStoreName string
 	Nonce            string
 	State            string
 }
 
 func NewGithubClient() Manager {
-	utils2.SessionStore = sessions.NewCookieStore([]byte(utils2.CookieName))
+	//utils2.SessionStore = sessions.NewCookieStore([]byte(utils2.CookieName))
 	utils2.Nonce, _ = utils2.GenerateNonce()
 	utils2.State = utils2.GenerateState()
 	return &Github{
@@ -136,4 +136,17 @@ func (g *Github) GetProfile(r *http.Request) (map[string]string, error) {
 	defer resp.Body.Close()
 	_ = json.Unmarshal(body, &m)
 	return m, nil
+}
+
+func init() {
+	var err error
+	utils2.SessionStore, err = sqlitestore.NewSqliteStore(
+		"./database",
+		"sessions",
+		"/",
+		3600,
+		[]byte(utils2.CookieName))
+	if err != nil {
+		panic(err)
+	}
 }
