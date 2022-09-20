@@ -14,7 +14,7 @@ func (h *Auth) HomeHandler(w http.ResponseWriter, r *http.Request) {
 	profile, _ := h.manager.GetProfile(r)
 	data := customData{
 		Profile:         profile,
-		IsAuthenticated: utils2.IsAuthenticated(),
+		IsAuthenticated: utils2.IsAuthenticated(r),
 	}
 	err := utils2.View.ExecuteTemplate(w, "home.gohtml", data)
 	if err != nil {
