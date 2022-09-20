@@ -27,9 +27,13 @@ func (h *Auth) CallBackHandler(w http.ResponseWriter, r *http.Request) {
 		log.Info().Err(er)
 		return
 	}
-	fmt.Println(profile)
+	var accountID string
+	accountID = profile["email"]
+	if len(accountID) < 0 {
+		accountID = profile["name"]
+	}
 	accessToken := entities.AccessToken{
-		AccountID:   profile["email"],
+		AccountID:   accountID,
 		AccessToken: e.AccessToken,
 		IdToken:     e.IdToken,
 	}
