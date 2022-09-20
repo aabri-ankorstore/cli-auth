@@ -116,11 +116,12 @@ func (g *Okta) ExchangeCode(w http.ResponseWriter, r *http.Request) (Exchange, e
 			DB:  utils2.DB.DB,
 			Ctx: context.Background(),
 		}
-		err = repo.Insert(entities.AccessToken{
-			AccountID:   "def123",
+		accessToken := entities.AccessToken{
+			AccountID:   "abc123",
 			AccessToken: exchange.AccessToken,
-			IdToken:     exchange.IdToken,
-		})
+			IdToken:     "123",
+		}
+		err = repo.Insert(accessToken)
 		if err != nil {
 			return Exchange{}, err
 		}
