@@ -6,6 +6,7 @@ import (
 	"github.com/aabri-ankorstore/cli-auth/pkg/entities"
 	"github.com/aabri-ankorstore/cli-auth/pkg/repository"
 	utils2 "github.com/aabri-ankorstore/cli-auth/utils"
+	"k8s.io/apimachinery/pkg/util/rand"
 	"net/http"
 )
 
@@ -22,9 +23,9 @@ func (h *Auth) CallBackHandler(w http.ResponseWriter, r *http.Request) {
 		Ctx: context.Background(),
 	}
 	accessToken := entities.AccessToken{
-		AccountID:   "amineabri@gmail.com",
+		AccountID:   rand.String(10),
 		AccessToken: e.AccessToken,
-		IdToken:     "123",
+		IdToken:     e.IdToken,
 	}
 	err := repo.Insert(&accessToken)
 	if err != nil {
