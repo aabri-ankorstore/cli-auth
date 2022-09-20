@@ -94,20 +94,6 @@ func (g *Github) ExchangeCode(w http.ResponseWriter, r *http.Request) (Exchange,
 	if err != nil {
 		return Exchange{}, err
 	}
-	// save access token
-	//repo := repository.AccessTokensRepository{
-	//	DB:  utils2.DB.DB,
-	//	Ctx: context.Background(),
-	//}
-	//accessToken := entities.AccessToken{
-	//	AccountID:   "abc123",
-	//	AccessToken: exchange.AccessToken,
-	//	IdToken:     "",
-	//}
-	//err = repo.Insert(accessToken)
-	//if err != nil {
-	//	return Exchange{}, err
-	//}
 	return exchange, nil
 }
 func (g *Github) VerifyToken(t string) (*verifier.Jwt, error) {

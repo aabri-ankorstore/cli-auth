@@ -21,8 +21,9 @@ func (h *Auth) CallBackHandler(w http.ResponseWriter, r *http.Request) {
 		DB:  utils2.DB.DB,
 		Ctx: context.Background(),
 	}
+	profile, _ := h.manager.GetProfile(r)
 	accessToken := entities.AccessToken{
-		ClientID:    utils2.ClientID,
+		AccountID:   profile["email"],
 		AccessToken: e.AccessToken,
 		IdToken:     e.IdToken,
 	}
