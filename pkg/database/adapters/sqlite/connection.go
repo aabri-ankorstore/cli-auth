@@ -24,7 +24,7 @@ func InitDB(verbose bool) (*SqliteDB, error) {
 	plugin := dirs.GetPluginsDir()
 	sqlDB, err := sql.Open(
 		sqliteshim.DriverName(),
-		fmt.Sprintf("%s/%s/access_tokens.db", plugin, utils.PluginPath),
+		fmt.Sprintf("%s/%s/sessions.db", plugin, utils.PluginPath),
 	)
 	if err != nil {
 		panic(err)

@@ -1,12 +1,8 @@
 package drivers
 
 import (
-	"context"
 	"fmt"
-	"github.com/aabri-ankorstore/cli-auth/pkg/database/adapters/sqlite"
 	verifier "github.com/okta/okta-jwt-verifier-golang"
-	"github.com/uptrace/bun"
-	"log"
 	"net/http"
 )
 
@@ -29,25 +25,5 @@ func GetAuth(authType string) (Manager, error) {
 		return NewGithubClient(), nil
 	default:
 		return nil, fmt.Errorf("wrong auth type passed")
-	}
-}
-func init() {
-	// Run migration
-	runMigration()
-}
-func runMigration() {
-	// Run migration
-	ctx := context.Background()
-	// Initialize db for migrations
-	db, err := sqlite.InitDB(false)
-	if err != nil {
-		log.Printf("failed to initialize db", "err", err)
-	}
-	// Run migrations.
-	if err = db.RunMigrations(ctx); err != nil {
-		log.Printf("failed to migrate DB: %w", err)
-	}
-	if err = db.DB.(*bun.DB).DB.Close(); err != nil {
-		log.Printf("failed to close migrations DB: %w", err)
 	}
 }
