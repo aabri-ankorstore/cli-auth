@@ -27,6 +27,7 @@ func (h *Auth) CallBackHandler(w http.ResponseWriter, r *http.Request) {
 		log.Info().Err(er)
 		return
 	}
+	fmt.Println(profile)
 	accessToken := entities.AccessToken{
 		AccountID:   profile["email"],
 		AccessToken: e.AccessToken,
