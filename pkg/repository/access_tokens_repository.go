@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"errors"
 	"github.com/aabri-ankorstore/cli-auth/pkg/entities"
 	"github.com/uptrace/bun"
 )
@@ -44,6 +45,8 @@ func (c *AccessTokensRepository) Insert(value interface{}) error {
 			Model(value).
 			Exec(c.Ctx)
 		return err
+	default:
+		panic(errors.New("internal error"))
 	}
 	return nil
 }
@@ -64,6 +67,8 @@ func (c *AccessTokensRepository) Update(value interface{}) error {
 			WherePK().
 			Exec(c.Ctx)
 		return err
+	default:
+		panic(errors.New("internal error"))
 	}
 	return nil
 }
