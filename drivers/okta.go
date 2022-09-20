@@ -142,7 +142,7 @@ func (g *Okta) GetProfile(r *http.Request) (map[string]string, error) {
 
 	token := session.Values["access_token"].(string)
 	reqUrl := fmt.Sprintf("%s/v1/userinfo", utils2.ISSUER)
-
+	fmt.Println(fmt.Sprintf("%s", token))
 	req, _ := http.NewRequest("GET", reqUrl, bytes.NewReader([]byte("")))
 	h := req.Header
 	h.Add("Authorization", fmt.Sprintf("Bearer %s", token))
