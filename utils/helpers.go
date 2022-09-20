@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"bytes"
 	"encoding/json"
 	"github.com/rs/zerolog/log"
 	"net/http"
@@ -17,7 +16,7 @@ func IsAuthenticated(r *http.Request) bool {
 }
 
 func IsAuthenticatedViaWeb() bool {
-	req, reqerr := http.NewRequest("POST", "http://localhost:8080/is-authenticated", bytes.NewBuffer(nil))
+	req, reqerr := http.NewRequest("GET", "http://localhost:8080/is-authenticated", nil)
 	if reqerr != nil {
 		return false
 	}
@@ -27,11 +26,11 @@ func IsAuthenticatedViaWeb() bool {
 	resp, _ := client.Do(req)
 	decoder := json.NewDecoder(resp.Body)
 	defer resp.Body.Close()
+
 	type status struct {
 		IsAuthenticated bool `json:"IsAuthenticated,omitempty"`
 	}
 	var data status
 	_ = decoder.Decode(&data)
-
 	return data.IsAuthenticated
 }
