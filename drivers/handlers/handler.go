@@ -31,7 +31,6 @@ func NewHandler(handler *handler.Handler, manager drivers.Manager) (*handler.Han
 	//#################
 
 	handler.Mux.HandleFunc("/", a.HomeHandler).Methods("GET")
-	handler.Mux.HandleFunc("/is-authenticated", a.IsAuthenticated).Methods("GET")
 	handler.Mux.HandleFunc("/login", a.LoginHandler).Methods("GET")
 	handler.Mux.HandleFunc("/authorization-code/callback", a.CallBackHandler).Methods("GET")
 	handler.Mux.HandleFunc("/logout", a.LogoutHandler).Methods("POST")
