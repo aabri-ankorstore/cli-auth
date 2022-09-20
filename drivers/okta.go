@@ -156,7 +156,7 @@ func (g *Okta) GetProfile(r *http.Request) (map[string]string, error) {
 
 func init() {
 	var err error
-	db, err := sql.Open("ql-mem", "auth.db")
+	db, err := sql.Open("ql-mem", "testing.db")
 	if err != nil {
 		panic(err)
 	}

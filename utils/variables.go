@@ -16,7 +16,7 @@ var (
 	ISSUER       string
 	RedirectUri  string
 	ClientID     string
-	CookieName   = "login-session-store"
+	CookieName   = "session-name"
 	State        = "none"
 	Nonce        = "NonceNotSetYet"
 	PluginRepo   = "https://github.com/ankorstore/ankorstore-plugin-cypress"
