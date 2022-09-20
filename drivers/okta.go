@@ -7,12 +7,14 @@ import (
 	"errors"
 	"fmt"
 	utils2 "github.com/aabri-ankorstore/cli-auth/utils"
+	"github.com/ankorstore/ankorstore-cli-core/pkg/util"
 	"github.com/michaeljs1990/sqlitestore"
 	verifier "github.com/okta/okta-jwt-verifier-golang"
 	"github.com/rs/zerolog/log"
 	"github.com/skratchdot/open-golang/open"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -24,7 +26,6 @@ type Okta struct {
 }
 
 func NewOktaClient() Manager {
-	//utils2.SessionStore = sessions.NewCookieStore([]byte(utils2.CookieName))
 	utils2.Nonce, _ = utils2.GenerateNonce()
 	utils2.State = utils2.GenerateState()
 	return &Okta{
@@ -155,8 +156,13 @@ func (g *Okta) GetProfile(r *http.Request) (map[string]string, error) {
 
 func init() {
 	var err error
+	dirs := util.NewDirs()
+	authDir := fmt.Sprintf("%s/%s", dirs.GetPluginsDir(), utils2.PluginPath)
+	if _, err := os.Stat(authDir); os.IsNotExist(err) {
+		authDir = "."
+	}
 	utils2.SessionStore, err = sqlitestore.NewSqliteStore(
-		"./database",
+		fmt.Sprintf("%s/auth", authDir),
 		"sessions",
 		"/",
 		3600,
