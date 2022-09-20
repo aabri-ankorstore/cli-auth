@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"github.com/aabri-ankorstore/cli-auth/pkg/database/adapters/sqlite"
 	verifier "github.com/okta/okta-jwt-verifier-golang"
+	"github.com/rs/zerolog/log"
 	"github.com/uptrace/bun"
-	"log"
 	"net/http"
 )
 
@@ -15,8 +15,7 @@ const (
 )
 
 var (
-	db  *sqlite.SqliteDB
-	con *sqlite.SqliteDB
+	db *sqlite.SqliteDB
 )
 
 type Manager interface {
@@ -40,7 +39,7 @@ func init() {
 	// Initialize db
 	con, err := sqlite.InitDB(false)
 	if err != nil {
-		log.Printf("failed to initialize db", "err", err)
+		log.Info().Err(err)
 	}
 	db = con
 	// Run migration
