@@ -91,7 +91,6 @@ func (g *Github) ExchangeCode(w http.ResponseWriter, r *http.Request) (Exchange,
 	//session.Values["id_token"] = exchange.IdToken
 	session.Values["access_token"] = exchange.AccessToken
 	err = session.Save(r, w)
-	fmt.Println(exchange.AccessToken)
 	if err != nil {
 		return Exchange{}, err
 	}
