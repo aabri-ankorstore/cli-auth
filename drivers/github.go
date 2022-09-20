@@ -105,8 +105,6 @@ func (g *Github) ExchangeCode(w http.ResponseWriter, r *http.Request) (Exchange,
 	err = repo.Insert(entities.AccessToken{
 		AccountID:   "abc123",
 		AccessToken: exchange.AccessToken,
-		TokenExpiry: "",
-		RaptToken:   "",
 		IdToken:     "",
 	})
 	if err != nil {

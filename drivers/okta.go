@@ -119,8 +119,6 @@ func (g *Okta) ExchangeCode(w http.ResponseWriter, r *http.Request) (Exchange, e
 		err = repo.Insert(entities.AccessToken{
 			AccountID:   "def123",
 			AccessToken: exchange.AccessToken,
-			TokenExpiry: "",
-			RaptToken:   "",
 			IdToken:     exchange.IdToken,
 		})
 		if err != nil {

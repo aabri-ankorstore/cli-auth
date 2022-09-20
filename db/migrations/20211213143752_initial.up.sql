@@ -8,5 +8,5 @@ CREATE TABLE credentials (
 CREATE TABLE access_tokens (
     account_id   TEXT primary key,
     access_token TEXT,
-    token_expiry TIMESTAMP
+    id_token TEXT
 );
