@@ -187,3 +187,11 @@ func init() {
 		log.Printf("failed to initialize db", "err", err)
 	}
 }
+func init() {
+	// Run migration
+	ctx := context.Background()
+	// Run migrations.
+	if err := utils2.DB.RunMigrations(ctx); err != nil {
+		log.Printf("failed to migrate DB: %w", err)
+	}
+}
