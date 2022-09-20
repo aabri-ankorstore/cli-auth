@@ -72,12 +72,10 @@ func Migrate(ctx context.Context, db *bun.DB) error {
 		return err
 	}
 
-	status, err := m.MigrationsWithStatus(ctx)
+	_, err := m.MigrationsWithStatus(ctx)
 	if err != nil {
 		return err
 	}
-	log.Printf("migration done", "applied", status.Applied(), "status", status.String(), "unaplied", status.Unapplied())
-
 	return nil
 }
 
