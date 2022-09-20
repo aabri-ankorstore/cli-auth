@@ -4,8 +4,6 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"github.com/aabri-ankorstore/cli-auth/utils"
-	"github.com/ankorstore/ankorstore-cli-core/pkg/util"
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dialect/sqlitedialect"
 	"github.com/uptrace/bun/driver/sqliteshim"
@@ -20,10 +18,14 @@ func InitDB(verbose bool) (*SqliteDB, error) {
 	if db != nil {
 		return nil, errors.New("nil configuration")
 	}
-	dirs := util.NewDirs()
-	plugin := dirs.GetPluginsDir()
+	//dirs := util.NewDirs()
+	//plugin := dirs.GetPluginsDir()
 
-	sqlDB, err := sql.Open(sqliteshim.DriverName(), fmt.Sprintf("%s/%s/access_tokens.db", plugin, utils.PluginPath))
+	sqlDB, err := sql.Open(
+		sqliteshim.DriverName(),
+		//fmt.Sprintf("%s/%s/access_tokens.db", plugin, utils.PluginPath),
+		"./access_tokens.db",
+	)
 	if err != nil {
 		panic(err)
 	}
