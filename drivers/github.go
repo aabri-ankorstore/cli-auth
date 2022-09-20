@@ -137,7 +137,7 @@ func (g *Github) GetProfile(r *http.Request) (map[string]string, error) {
 	body, _ := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
 
-	fmt.Println(body)
+	fmt.Println(resp.Body)
 
 	_ = json.Unmarshal(body, &m)
 	return m, nil
