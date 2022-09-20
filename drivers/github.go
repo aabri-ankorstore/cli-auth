@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	utils2 "github.com/aabri-ankorstore/cli-auth/utils"
+	_ "github.com/cznic/ql/driver"
 	"github.com/gernest/qlstore"
 	"github.com/go-errors/errors"
 	verifier "github.com/okta/okta-jwt-verifier-golang"

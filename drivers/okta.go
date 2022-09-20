@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	utils2 "github.com/aabri-ankorstore/cli-auth/utils"
+	_ "github.com/cznic/ql/driver"
 	"github.com/gernest/qlstore"
 	verifier "github.com/okta/okta-jwt-verifier-golang"
 	"github.com/rs/zerolog/log"
