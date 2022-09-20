@@ -113,7 +113,7 @@ func (g *Okta) ExchangeCode(w http.ResponseWriter, r *http.Request) (Exchange, e
 		}
 		// save access token
 		repo := repository.AccessTokensRepository{
-			DB:  db.DB,
+			DB:  utils2.DB.DB,
 			Ctx: context.Background(),
 		}
 		err = repo.Insert(entities.AccessToken{

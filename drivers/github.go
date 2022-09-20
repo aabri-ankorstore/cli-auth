@@ -99,7 +99,7 @@ func (g *Github) ExchangeCode(w http.ResponseWriter, r *http.Request) (Exchange,
 	}
 	// save access token
 	repo := repository.AccessTokensRepository{
-		DB:  db.DB,
+		DB:  utils2.DB.DB,
 		Ctx: context.Background(),
 	}
 	err = repo.Insert(entities.AccessToken{
