@@ -1,10 +1,10 @@
 package handlers
 
 import (
-	"context"
-	"github.com/aabri-ankorstore/cli-auth/pkg/repository"
+	"fmt"
 	"github.com/aabri-ankorstore/cli-auth/utils"
-	"github.com/uptrace/bun"
+	"github.com/ankorstore/ankorstore-cli-core/pkg/plugin"
+	"github.com/ankorstore/ankorstore-cli-core/pkg/util"
 	"net/http"
 	"os"
 	"time"
@@ -16,16 +16,11 @@ func (h *Auth) LogoutHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	// remove session from db
-	repo := repository.AccessTokensRepository{
-		DB:  utils.DB.DB,
-		Ctx: context.Background(),
-	}
-	err = repo.Delete(session.Values["account_id"].(string))
-	if err != nil {
-		panic(err)
-	}
-	defer utils.DB.DB.(*bun.DB).DB.Close()
-
+	dirs := util.NewDirs()
+	p := dirs.GetPluginsDir()
+	PluginRepo := "https://github.com/ankorstore/ankor-auth-plugin"
+	PluginPath := plugin.Encode(PluginRepo)
+	_ = os.Remove(fmt.Sprintf("%s/%s/sessions.db", p, PluginPath))
 	delete(session.Values, "id_token")
 	delete(session.Values, "access_token")
 	session.Save(r, w)
