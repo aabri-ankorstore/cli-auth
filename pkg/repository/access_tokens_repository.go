@@ -15,7 +15,7 @@ type AccessTokensRepository struct {
 
 func (c *AccessTokensRepository) Get(ID string) (interface{}, error) {
 	var accessToken entities.AccessToken
-	if err := c.DB.NewSelect().Model(&accessToken).Where("account_id = ?", ID).Scan(c.Ctx); err != nil {
+	if err := c.DB.NewSelect().Model(&accessToken).Where("client_id = ?", ID).Scan(c.Ctx); err != nil {
 		return nil, err
 	}
 	defer utils.DB.DB.(*bun.DB).DB.Close()
@@ -81,7 +81,7 @@ func (c *AccessTokensRepository) Update(value interface{}) error {
 }
 func (c *AccessTokensRepository) Delete(ID string) error {
 	accessToken := new(entities.AccessToken)
-	_, err := c.DB.NewDelete().Model(accessToken).Where("account_id = ?", ID).Exec(c.Ctx)
+	_, err := c.DB.NewDelete().Model(accessToken).Where("client_id = ?", ID).Exec(c.Ctx)
 	defer utils.DB.DB.(*bun.DB).DB.Close()
 	return err
 }
