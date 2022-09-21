@@ -24,7 +24,6 @@ type UdpProtocol struct {
 	DefaultPort  int
 	Conn         *net.UDPConn
 	PluginFolder string
-	Payload
 }
 
 func NewUdpProtocol(host string, defaultPort int, pluginFolder string) *UdpProtocol {
@@ -62,38 +61,11 @@ func (u *UdpProtocol) Listen() {
 	u.CheckError(err)
 	fmt.Println("Udp Server started...")
 	for {
-		u.CheckError(u.HandleClient())
-	}
-}
-func (u *UdpProtocol) IsAuthenticated() bool {
-	udpAddr, err := net.ResolveUDPAddr("udp4", fmt.Sprintf("%s:%d", u.Host, u.DefaultPort))
-	u.CheckError(err)
-	conn, err := net.DialUDP("udp", nil, udpAddr)
-	u.CheckError(err)
-
-	//Send Data
-	go func() {
-
-		var jsonStr = []byte(fmt.Sprintf(`{"is_authenticated":"%t"}`, u.IsAuth()))
-		_, err := conn.Write(jsonStr)
-		u.CheckError(err)
-	}()
-	receiver := make(chan bool)
-	for {
 		// Receive data
-		go func() {
-			var buf [512]byte
-			n, err := conn.Read(buf[0:])
-			u.CheckError(err)
-
-			var p Payload
-			err = json.Unmarshal(buf[0:n], &p)
-			u.CheckError(err)
-			receiver <- p.IsAuthenticated
-		}()
-		return <-receiver
+		u.HandleClient()
 	}
 }
+
 func (u *UdpProtocol) IsAuth() bool {
 	file := fmt.Sprintf("%s/%s/%s", u.PluginFolder, utils.PluginPath, pattern)
 	matches, err := filepath.Glob(file)
@@ -111,20 +83,44 @@ func (u *UdpProtocol) CheckError(err error) {
 	}
 }
 
-func (u *UdpProtocol) HandleClient() error {
+func (u *UdpProtocol) HandleClient() {
 	var buf [512]byte
 	n, addr, err := u.Conn.ReadFromUDP(buf[0:])
-	if err != nil {
-		return err
-	}
+	u.CheckError(err)
 	var p Payload
 	err = json.Unmarshal(buf[0:n], &p)
-	if err != nil {
-		return err
-	}
+	u.CheckError(err)
 
-	//fmt.Println(p.Message)
-	var jsonStr = []byte(fmt.Sprintf(`{"message":"%t"}`, true))
-	u.Conn.WriteToUDP(jsonStr, addr)
-	return nil
+	fmt.Println(p.IsAuthenticated)
+	var jsonStr = []byte(fmt.Sprintf(`{"is_authenticated":"%t"}`, u.IsAuth()))
+	_, err = u.Conn.WriteToUDP(jsonStr, addr)
+	u.CheckError(err)
+}
+
+func (u *UdpProtocol) Send() bool {
+	udpAddr, err := net.ResolveUDPAddr("udp4", ":1200")
+	u.CheckError(err)
+	conn, err := net.DialUDP("udp", nil, udpAddr)
+	u.CheckError(err)
+
+	// Send Data
+	go func() {
+		var jsonStr = []byte(`{"is_authenticated":"true"}`)
+		_, err := conn.Write(jsonStr)
+		u.CheckError(err)
+	}()
+
+	for {
+		// Receive Data
+		go func() bool {
+			var buf [512]byte
+			n, err := conn.Read(buf[0:])
+			u.CheckError(err)
+
+			var p Payload
+			err = json.Unmarshal(buf[0:n], &p)
+			u.CheckError(err)
+			return p.IsAuthenticated
+		}()
+	}
 }
