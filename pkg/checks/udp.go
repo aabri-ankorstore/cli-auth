@@ -80,14 +80,13 @@ func (u *UdpProtocol) CheckError(err error) {
 
 func (u *UdpProtocol) HandleClient() {
 	var buf [512]byte
-	n, addr, err := u.Conn.ReadFromUDP(buf[0:])
+	_, addr, err := u.Conn.ReadFromUDP(buf[0:])
 	u.CheckError(err)
-	fmt.Println(n)
 	_, err = u.Conn.WriteToUDP([]byte(fmt.Sprintf("%t", u.IsAuth())), addr)
 	u.CheckError(err)
 }
 
-func Client() {
+func Client() (string, error) {
 	udpAddr, err := net.ResolveUDPAddr("udp4", ":1200")
 	if err != nil {
 		panic(err)
@@ -96,13 +95,12 @@ func Client() {
 	if err != nil {
 		panic(err)
 	}
-
+	errChan := make(chan error, 0)
+	results := make(chan string, 0)
 	// Send Data
 	go func() {
 		_, err := conn.Write([]byte(`ping`))
-		if err != nil {
-			panic(err)
-		}
+		errChan <- err
 	}()
 
 	for {
@@ -110,11 +108,16 @@ func Client() {
 		go func() {
 			var buf [512]byte
 			n, err := conn.Read(buf[0:])
-			if err != nil {
-				panic(err)
-			}
-			fmt.Println(string(buf[0:n]))
+			errChan <- err
+			bytes := buf[0:n]
+			results <- string(bytes)
 			os.Exit(0)
 		}()
+		select {
+		case err := <-errChan:
+			return "false", err
+		case res := <-results:
+			return res, nil
+		}
 	}
 }
