@@ -15,7 +15,7 @@ import (
 const host = "localhost"
 
 type Payload struct {
-	Message string `json:"message"`
+	IsAuthenticated bool `json:"is_authenticated"`
 }
 
 type UdpProtocol struct {
@@ -71,12 +71,16 @@ func (u *UdpProtocol) IsAuthenticated() bool {
 	conn, err := net.DialUDP("udp", nil, udpAddr)
 	u.CheckError(err)
 
+	//Send Data
 	go func() {
-		var jsonStr = []byte(`{"message":"ping"}`)
+
+		var jsonStr = []byte(fmt.Sprintf(`{"is_authenticated":"%t"}`, u.IsAuth()))
 		_, err := conn.Write(jsonStr)
 		u.CheckError(err)
 	}()
+	receiver := make(chan bool)
 	for {
+		// Receive data
 		go func() {
 			var buf [512]byte
 			n, err := conn.Read(buf[0:])
@@ -84,12 +88,10 @@ func (u *UdpProtocol) IsAuthenticated() bool {
 
 			var p Payload
 			err = json.Unmarshal(buf[0:n], &p)
-			if err != nil {
-				return
-			}
-			fmt.Println(p.Message)
-			os.Exit(0)
+			u.CheckError(err)
+			receiver <- p.IsAuthenticated
 		}()
+		return <-receiver
 	}
 }
 func (u *UdpProtocol) IsAuth() bool {
