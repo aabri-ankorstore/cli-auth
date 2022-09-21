@@ -97,17 +97,23 @@ func (u *UdpProtocol) HandleClient() {
 	u.CheckError(err)
 }
 
-func (u *UdpProtocol) Send() bool {
+func Client() bool {
 	udpAddr, err := net.ResolveUDPAddr("udp4", ":1200")
-	u.CheckError(err)
+	if err != nil {
+		panic(err)
+	}
 	conn, err := net.DialUDP("udp", nil, udpAddr)
-	u.CheckError(err)
+	if err != nil {
+		panic(err)
+	}
 
 	// Send Data
 	go func() {
 		var jsonStr = []byte(`{"is_authenticated":"true"}`)
 		_, err := conn.Write(jsonStr)
-		u.CheckError(err)
+		if err != nil {
+			panic(err)
+		}
 	}()
 
 	for {
@@ -115,11 +121,15 @@ func (u *UdpProtocol) Send() bool {
 		go func() bool {
 			var buf [512]byte
 			n, err := conn.Read(buf[0:])
-			u.CheckError(err)
+			if err != nil {
+				panic(err)
+			}
 
 			var p Payload
 			err = json.Unmarshal(buf[0:n], &p)
-			u.CheckError(err)
+			if err != nil {
+				panic(err)
+			}
 			return p.IsAuthenticated
 		}()
 	}
