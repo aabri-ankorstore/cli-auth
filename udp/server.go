@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/aabri-ankorstore/cli-auth/server/util/port"
+	"github.com/aabri-ankorstore/cli-auth/utils"
 	"github.com/pkg/errors"
 	"net"
+	"net/http"
 	"os"
 	"strconv"
 )
@@ -61,9 +63,10 @@ func handleClient(conn *net.UDPConn) {
 		return
 	}
 
-	fmt.Println(p.Message)
-
-	var jsonStr = []byte(`{"message":"pong"}`)
+	//fmt.Println(p.Message)
+	req, _ := http.NewRequest("GET", "http://localhost:8080", nil)
+	isAuthenticated := utils.IsAuthenticated(req)
+	var jsonStr = []byte(fmt.Sprintf(`{"message":"%t"}`, isAuthenticated))
 	conn.WriteToUDP(jsonStr, addr)
 }
 func checkError(err error) {
