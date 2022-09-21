@@ -19,7 +19,7 @@ var (
 	CookieName   = "login-session-store"
 	State        = "none"
 	Nonce        = "NonceNotSetYet"
-	LockFile     *string
+	LockFile     string
 	PluginRepo   = "https://github.com/ankorstore/ankor-auth-plugin"
 	PluginPath   = plugin.Encode(PluginRepo)
 )

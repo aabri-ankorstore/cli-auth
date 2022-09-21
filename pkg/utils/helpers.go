@@ -6,6 +6,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"net/http"
 	"os"
+	"path/filepath"
 )
 
 func IsAuthenticated(r *http.Request) bool {
@@ -26,19 +27,21 @@ func CreateTmpFile() (*os.File, error) {
 	return f, nil
 }
 
-func IsAuthenticatedOffline() *bool {
+func IsAuthenticatedOffline() bool {
 	dirs := util.NewDirs()
-	file := fmt.Sprintf("%s/%s/%s", dirs.GetPluginsDir(), PluginPath, LockFile)
-	fileInfo, err := os.Stat(file)
-	if os.IsNotExist(err) {
-		IsNotExist := false
-		return &IsNotExist
+	pattern := "*-auth.lock"
+	file := fmt.Sprintf("%s/%s/%s", dirs.GetPluginsDir(), PluginPath, pattern)
+	matches, err := filepath.Glob(file)
+	if err != nil {
+		return false
 	}
-	// Return false if the fileinfo says the file path is a directory.
-	b := !fileInfo.IsDir()
-	return &b
+	for _, match := range matches {
+		fmt.Printf("MATCH: [%s]\n", match)
+		return true
+	}
+	return true
 }
 
 func RemoveAuth() {
-	_ = os.Remove(*LockFile)
+	_ = os.Remove(LockFile)
 }
