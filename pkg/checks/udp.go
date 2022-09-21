@@ -7,6 +7,7 @@ import (
 	"github.com/pkg/errors"
 	"net"
 	"os"
+	"path/filepath"
 	"strconv"
 )
 
@@ -22,10 +23,11 @@ type UdpProtocol struct {
 	ForcePort   *int
 	DefaultPort int
 	Conn        *net.UDPConn
+	PluginPath  string
 	Payload
 }
 
-func NewUdpProtocol() CheckManager {
+func NewUdpProtocol() *UdpProtocol {
 	return &UdpProtocol{
 		Type: "server",
 	}
@@ -62,16 +64,14 @@ func (u *UdpProtocol) Listen() error {
 	}
 }
 
-func (u *UdpProtocol) CreateTmpFile() (string, error) {
-	panic("Not Implemented")
-}
-
-func (u *UdpProtocol) IsAuthenticatedOffline() bool {
-	panic("Not Implemented")
-}
-
-func (u *UdpProtocol) RemoveAuth() {
-	panic("Not Implemented")
+func (u *UdpProtocol) IsAuthenticated() bool {
+	file := fmt.Sprintf("%s/%s", u.PluginPath, pattern)
+	matches, err := filepath.Glob(file)
+	u.CheckError(err)
+	if len(matches) > 0 {
+		return true
+	}
+	return false
 }
 
 func (u *UdpProtocol) CheckError(err error) {

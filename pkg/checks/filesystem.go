@@ -14,30 +14,22 @@ type FileSystem struct {
 	PluginPath string
 }
 
-func NewFilesystem() CheckManager {
+func NewFilesystem() *FileSystem {
 	return &FileSystem{
 		Type: "filesystem",
 	}
 }
 
-func (f *FileSystem) Listen() error {
-	panic("Not Implemented")
-}
-
 func (f *FileSystem) CreateTmpFile() (string, error) {
 	file, err := os.CreateTemp(f.PluginPath, pattern)
-	if err != nil {
-		return "", err
-	}
+	f.CheckError(err)
 	return file.Name(), nil
 }
 
-func (f *FileSystem) IsAuthenticatedOffline() bool {
+func (f *FileSystem) IsAuthenticated() bool {
 	file := fmt.Sprintf("%s/%s", f.PluginPath, pattern)
 	matches, err := filepath.Glob(file)
-	if err != nil {
-		return false
-	}
+	f.CheckError(err)
 	if len(matches) > 0 {
 		return true
 	}
@@ -45,11 +37,7 @@ func (f *FileSystem) IsAuthenticatedOffline() bool {
 }
 
 func (f *FileSystem) RemoveAuth() {
-	_ = os.Remove(utils.LockFile)
-}
-
-func (f *FileSystem) HandleClient() error {
-	panic("Not Implemented")
+	f.CheckError(os.Remove(utils.LockFile))
 }
 
 func (f *FileSystem) CheckError(err error) {
