@@ -18,7 +18,7 @@ func IsAuthenticated(r *http.Request) bool {
 }
 
 func CreateTmpFile() (*os.File, error) {
-	f, err := os.CreateTemp("", "auth")
+	f, err := os.CreateTemp("ankorauth", "auth")
 	if err != nil {
 		return nil, err
 	}
