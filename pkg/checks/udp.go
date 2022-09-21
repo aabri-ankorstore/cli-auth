@@ -89,7 +89,7 @@ func (u *UdpProtocol) HandleClient() {
 func Client() (bool, error) {
 	errChan := make(chan error, 0)
 	results := make(chan string, 0)
-	udpAddr, err := net.ResolveUDPAddr("udp4", ":1200")
+	udpAddr, err := net.ResolveUDPAddr("udp4", fmt.Sprintf("%s:%d", "localhost", 1200))
 	if err != nil {
 		errChan <- err
 	}
