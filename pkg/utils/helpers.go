@@ -24,6 +24,7 @@ func CreateTmpFile() (*os.File, error) {
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println(f.Name())
 	defer os.Remove(f.Name())
 	return f, nil
 }
