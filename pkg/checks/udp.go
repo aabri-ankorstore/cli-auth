@@ -65,8 +65,34 @@ func (u *UdpProtocol) Listen() {
 		u.CheckError(u.HandleClient())
 	}
 }
-
 func (u *UdpProtocol) IsAuthenticated() bool {
+	udpAddr, err := net.ResolveUDPAddr("udp4", fmt.Sprintf("%s:%d", u.Host, u.DefaultPort))
+	u.CheckError(err)
+	conn, err := net.DialUDP("udp", nil, udpAddr)
+	u.CheckError(err)
+
+	go func() {
+		var jsonStr = []byte(`{"message":"ping"}`)
+		_, err := conn.Write(jsonStr)
+		u.CheckError(err)
+	}()
+	for {
+		go func() {
+			var buf [512]byte
+			n, err := conn.Read(buf[0:])
+			u.CheckError(err)
+
+			var p Payload
+			err = json.Unmarshal(buf[0:n], &p)
+			if err != nil {
+				return
+			}
+			fmt.Println(p.Message)
+			os.Exit(0)
+		}()
+	}
+}
+func (u *UdpProtocol) IsAuth() bool {
 	file := fmt.Sprintf("%s/%s/%s", u.PluginFolder, utils.PluginPath, pattern)
 	matches, err := filepath.Glob(file)
 	u.CheckError(err)
