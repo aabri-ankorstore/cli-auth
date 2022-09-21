@@ -2,6 +2,7 @@ package utils
 
 import (
 	"embed"
+	"github.com/ankorstore/ankorstore-cli-core/pkg/plugin"
 	"github.com/gorilla/sessions"
 	"html/template"
 	"os"
@@ -20,4 +21,6 @@ var (
 	State        = "none"
 	Nonce        = "NonceNotSetYet"
 	LockFile     *os.File
+	PluginRepo   = "https://github.com/ankorstore/ankor-auth-plugin"
+	PluginPath   = plugin.Encode(PluginRepo)
 )
