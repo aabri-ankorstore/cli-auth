@@ -66,6 +66,8 @@ func handleClient(conn *net.UDPConn) {
 	//fmt.Println(p.Message)
 	req, _ := http.NewRequest("GET", "http://localhost:8080", nil)
 	isAuthenticated := utils.IsAuthenticated(req)
+
+	fmt.Println(fmt.Sprintf("%v", isAuthenticated))
 	var jsonStr = []byte(fmt.Sprintf(`{"message":"%t"}`, isAuthenticated))
 	conn.WriteToUDP(jsonStr, addr)
 }
