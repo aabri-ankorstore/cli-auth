@@ -10,23 +10,23 @@ import (
 const pattern = "*-auth.lock"
 
 type FileSystem struct {
-	PluginPath string
+	PluginFolder string
 }
 
 func NewFilesystem(p string) *FileSystem {
 	return &FileSystem{
-		PluginPath: p,
+		PluginFolder: p,
 	}
 }
 
 func (f *FileSystem) CreateTmpFile() (string, error) {
-	file, err := os.CreateTemp(f.PluginPath, pattern)
+	file, err := os.CreateTemp(fmt.Sprintf("%s/%s", f.PluginFolder, utils.PluginPath), pattern)
 	f.CheckError(err)
 	return file.Name(), nil
 }
 
 func (f *FileSystem) IsAuthenticated() bool {
-	file := fmt.Sprintf("%s/%s", f.PluginPath, pattern)
+	file := fmt.Sprintf("%s/%s/%s", f.PluginFolder, utils.PluginPath, pattern)
 	matches, err := filepath.Glob(file)
 	f.CheckError(err)
 	if len(matches) > 0 {
