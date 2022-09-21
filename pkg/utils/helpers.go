@@ -18,13 +18,13 @@ func IsAuthenticated(r *http.Request) bool {
 	return true
 }
 
-func CreateTmpFile() (*os.File, error) {
+func CreateTmpFile() (string, error) {
 	dirs := util.NewDirs()
 	f, err := os.CreateTemp(fmt.Sprintf("%s/%s", dirs.GetPluginsDir(), PluginPath), "*-auth.lock")
 	if err != nil {
-		return nil, err
+		return "", err
 	}
-	return f, nil
+	return f.Name(), nil
 }
 
 func IsAuthenticatedOffline() bool {

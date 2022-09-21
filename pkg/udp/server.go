@@ -4,10 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/aabri-ankorstore/cli-auth/pkg/server/util/port"
-	"github.com/aabri-ankorstore/cli-auth/pkg/utils"
 	"github.com/pkg/errors"
 	"net"
-	"net/http"
 	"os"
 	"strconv"
 )
@@ -16,7 +14,7 @@ type Payload struct {
 	Message string `json:"message"`
 }
 
-// DefaultPort is the default port the ui server will listen to
+// DefaultPort is the default port the udp server will listen to
 const DefaultPort = 1200
 
 func NewServer(host string, forcePort *int) {
@@ -51,6 +49,7 @@ func NewServer(host string, forcePort *int) {
 		handleClient(conn)
 	}
 }
+
 func handleClient(conn *net.UDPConn) {
 	var buf [512]byte
 	n, addr, err := conn.ReadFromUDP(buf[0:])
@@ -64,12 +63,7 @@ func handleClient(conn *net.UDPConn) {
 	}
 
 	//fmt.Println(p.Message)
-	req, _ := http.NewRequest("GET", "http://localhost:8080", nil)
-	isAuthenticated := utils.IsAuthenticated(req)
-
-	fmt.Println(fmt.Sprintf("%v", isAuthenticated))
-
-	var jsonStr = []byte(fmt.Sprintf(`{"message":"%t"}`, isAuthenticated))
+	var jsonStr = []byte(fmt.Sprintf(`{"message":"%t"}`, true))
 	conn.WriteToUDP(jsonStr, addr)
 }
 func checkError(err error) {
