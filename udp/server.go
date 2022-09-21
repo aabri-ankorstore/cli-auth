@@ -44,6 +44,7 @@ func NewServer(host string, forcePort *int) {
 	checkError(err)
 	conn, err := net.ListenUDP("udp", udpAddr)
 	checkError(err)
+	fmt.Println("Udp Server started...")
 	for {
 		handleClient(conn)
 	}
