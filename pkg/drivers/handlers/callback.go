@@ -2,7 +2,9 @@ package handlers
 
 import (
 	"fmt"
+	"github.com/aabri-ankorstore/cli-auth/pkg/checks"
 	"github.com/aabri-ankorstore/cli-auth/pkg/utils"
+	"github.com/ankorstore/ankorstore-cli-core/pkg/util"
 	"net/http"
 )
 
@@ -14,11 +16,11 @@ func (h *Auth) CallBackHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// save access token
-	file, err := utils.CreateTmpFile()
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
+	dir := util.NewDirs()
+	f := checks.NewFilesystem(dir.GetPluginsDir())
+
+	file, err := f.CreateTmpFile()
+	f.CheckError(err)
 	utils.LockFile = file
 	http.Redirect(w, r, "/", http.StatusFound)
 }
