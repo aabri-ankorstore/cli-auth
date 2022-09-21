@@ -20,7 +20,7 @@ func IsAuthenticated(r *http.Request) bool {
 
 func CreateTmpFile() (*os.File, error) {
 	dirs := util.NewDirs()
-	f, err := os.CreateTemp(fmt.Sprintf("%s/%s", dirs.GetPluginsDir(), PluginPath), "auth")
+	f, err := os.CreateTemp(fmt.Sprintf("%s/%s", dirs.GetPluginsDir(), PluginPath), "auth.lock")
 	if err != nil {
 		return nil, err
 	}
