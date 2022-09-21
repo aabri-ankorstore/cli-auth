@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/aabri-ankorstore/cli-auth/pkg/server/util/port"
+	"github.com/aabri-ankorstore/cli-auth/pkg/utils"
 	"github.com/pkg/errors"
 	"net"
 	"os"
@@ -18,18 +19,18 @@ type Payload struct {
 }
 
 type UdpProtocol struct {
-	Type        string
-	Host        string
-	ForcePort   *int
-	DefaultPort int
-	Conn        *net.UDPConn
-	PluginPath  string
+	Host         string
+	ForcePort    *int
+	DefaultPort  int
+	Conn         *net.UDPConn
+	PluginFolder string
 	Payload
 }
 
-func NewUdpProtocol() *UdpProtocol {
+func NewUdpProtocol(host string, defaultPort int) *UdpProtocol {
 	return &UdpProtocol{
-		Type: "server",
+		Host:        host,
+		DefaultPort: defaultPort,
 	}
 }
 
@@ -65,7 +66,7 @@ func (u *UdpProtocol) Listen() error {
 }
 
 func (u *UdpProtocol) IsAuthenticated() bool {
-	file := fmt.Sprintf("%s/%s", u.PluginPath, pattern)
+	file := fmt.Sprintf("%s/%s/%s", u.PluginFolder, utils.PluginPath, pattern)
 	matches, err := filepath.Glob(file)
 	u.CheckError(err)
 	if len(matches) > 0 {

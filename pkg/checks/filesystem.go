@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/aabri-ankorstore/cli-auth/pkg/utils"
 	"os"
-	"path/filepath"
 )
 
 const pattern = "*-auth.lock"
@@ -20,22 +19,13 @@ func NewFilesystem(p string) *FileSystem {
 }
 
 func (f *FileSystem) CreateTmpFile() (string, error) {
-	file, err := os.CreateTemp(fmt.Sprintf("%s/%s", f.PluginFolder, utils.PluginPath), pattern)
+	plugin := fmt.Sprintf("%s/%s", f.PluginFolder, utils.PluginPath)
+	file, err := os.CreateTemp(plugin, pattern)
 	f.CheckError(err)
 	return file.Name(), nil
 }
 
-func (f *FileSystem) IsAuthenticated() bool {
-	file := fmt.Sprintf("%s/%s/%s", f.PluginFolder, utils.PluginPath, pattern)
-	matches, err := filepath.Glob(file)
-	f.CheckError(err)
-	if len(matches) > 0 {
-		return true
-	}
-	return false
-}
-
-func (f *FileSystem) RemoveAuth() {
+func (f *FileSystem) RemoveFile() {
 	f.CheckError(os.Remove(utils.LockFile))
 }
 
