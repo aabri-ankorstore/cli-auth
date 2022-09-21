@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"errors"
 	"fmt"
 	"github.com/ankorstore/ankorstore-cli-core/pkg/util"
 	"github.com/rs/zerolog/log"
@@ -30,10 +29,12 @@ func CreateTmpFile() (*os.File, error) {
 func IsAuthenticatedOffline() bool {
 	dirs := util.NewDirs()
 	file := fmt.Sprintf("%s/%s/%s", dirs.GetPluginsDir(), PluginPath, LockFile)
-	if _, err := os.Stat(file); errors.Is(err, os.ErrNotExist) {
+	fileInfo, err := os.Stat(file)
+	if os.IsNotExist(err) {
 		return false
 	}
-	return true
+	// Return false if the fileinfo says the file path is a directory.
+	return !fileInfo.IsDir()
 }
 
 func RemoveAuth() {
