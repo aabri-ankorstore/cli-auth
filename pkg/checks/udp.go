@@ -1,7 +1,6 @@
 package checks
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/aabri-ankorstore/cli-auth/pkg/server/util/port"
 	"github.com/aabri-ankorstore/cli-auth/pkg/utils"
@@ -13,10 +12,6 @@ import (
 )
 
 const host = "localhost"
-
-type Payload struct {
-	IsAuthenticated bool `json:"is_authenticated"`
-}
 
 type UdpProtocol struct {
 	Host         string
@@ -87,17 +82,12 @@ func (u *UdpProtocol) HandleClient() {
 	var buf [512]byte
 	n, addr, err := u.Conn.ReadFromUDP(buf[0:])
 	u.CheckError(err)
-	var p Payload
-	err = json.Unmarshal(buf[0:n], &p)
-	u.CheckError(err)
-
-	fmt.Println(p.IsAuthenticated)
-	var jsonStr = []byte(fmt.Sprintf(`{"is_authenticated":"%t"}`, u.IsAuth()))
-	_, err = u.Conn.WriteToUDP(jsonStr, addr)
+	fmt.Println(n)
+	_, err = u.Conn.WriteToUDP([]byte(fmt.Sprintf("%t", u.IsAuth())), addr)
 	u.CheckError(err)
 }
 
-func Client() bool {
+func Client() {
 	udpAddr, err := net.ResolveUDPAddr("udp4", ":1200")
 	if err != nil {
 		panic(err)
@@ -109,8 +99,7 @@ func Client() bool {
 
 	// Send Data
 	go func() {
-		var jsonStr = []byte(`{"is_authenticated":"true"}`)
-		_, err := conn.Write(jsonStr)
+		_, err := conn.Write([]byte(`ping`))
 		if err != nil {
 			panic(err)
 		}
@@ -118,19 +107,14 @@ func Client() bool {
 
 	for {
 		// Receive Data
-		go func() bool {
+		go func() {
 			var buf [512]byte
 			n, err := conn.Read(buf[0:])
 			if err != nil {
 				panic(err)
 			}
-
-			var p Payload
-			err = json.Unmarshal(buf[0:n], &p)
-			if err != nil {
-				panic(err)
-			}
-			return p.IsAuthenticated
+			fmt.Println(string(buf[0:n]))
+			os.Exit(0)
 		}()
 	}
 }
