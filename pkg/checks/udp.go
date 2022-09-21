@@ -109,14 +109,14 @@ func Client() (string, error) {
 			var buf [512]byte
 			n, err := conn.Read(buf[0:])
 			errChan <- err
-			bytes := buf[0:n]
-			results <- string(bytes)
+			results <- string(buf[0:n])
 			os.Exit(0)
 		}()
 		select {
 		case err := <-errChan:
 			return "false", err
 		case res := <-results:
+			fmt.Println(res)
 			return res, nil
 		}
 	}
