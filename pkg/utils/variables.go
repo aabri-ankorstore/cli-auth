@@ -2,7 +2,6 @@ package utils
 
 import (
 	"embed"
-	"github.com/aabri-ankorstore/cli-auth/pkg/database/adapters/sqlite"
 	"github.com/gorilla/sessions"
 	"html/template"
 )
@@ -19,5 +18,4 @@ var (
 	CookieName   = "login-session-store"
 	State        = "none"
 	Nonce        = "NonceNotSetYet"
-	DB           *sqlite.SqliteDB
 )

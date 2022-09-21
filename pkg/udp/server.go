@@ -3,8 +3,8 @@ package udp
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/aabri-ankorstore/cli-auth/server/util/port"
-	"github.com/aabri-ankorstore/cli-auth/utils"
+	"github.com/aabri-ankorstore/cli-auth/pkg/server/util/port"
+	"github.com/aabri-ankorstore/cli-auth/pkg/utils"
 	"github.com/pkg/errors"
 	"net"
 	"net/http"
@@ -68,6 +68,7 @@ func handleClient(conn *net.UDPConn) {
 	isAuthenticated := utils.IsAuthenticated(req)
 
 	fmt.Println(fmt.Sprintf("%v", isAuthenticated))
+
 	var jsonStr = []byte(fmt.Sprintf(`{"message":"%t"}`, isAuthenticated))
 	conn.WriteToUDP(jsonStr, addr)
 }

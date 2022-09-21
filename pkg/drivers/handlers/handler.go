@@ -1,9 +1,9 @@
 package handlers
 
 import (
-	"github.com/aabri-ankorstore/cli-auth/drivers"
-	"github.com/aabri-ankorstore/cli-auth/server/handler"
-	"github.com/aabri-ankorstore/cli-auth/utils"
+	"github.com/aabri-ankorstore/cli-auth/pkg/drivers"
+	"github.com/aabri-ankorstore/cli-auth/pkg/server/handler"
+	"github.com/aabri-ankorstore/cli-auth/pkg/utils"
 	"io/fs"
 	"net/http"
 )

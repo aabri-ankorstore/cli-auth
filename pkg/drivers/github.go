@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	utils2 "github.com/aabri-ankorstore/cli-auth/utils"
+	"github.com/aabri-ankorstore/cli-auth/pkg/utils"
 	"github.com/go-errors/errors"
 	"github.com/gorilla/sessions"
 	verifier "github.com/okta/okta-jwt-verifier-golang"
@@ -23,13 +23,13 @@ type Github struct {
 }
 
 func NewGithubClient() Manager {
-	utils2.Nonce, _ = utils2.GenerateNonce()
-	utils2.State = utils2.GenerateState()
+	utils.Nonce, _ = utils.GenerateNonce()
+	utils.State = utils.GenerateState()
 	return &Github{
-		SessionStore:     utils2.SessionStore,
-		SessionStoreName: utils2.CookieName,
-		Nonce:            utils2.Nonce,
-		State:            utils2.State,
+		SessionStore:     utils.SessionStore,
+		SessionStoreName: utils.CookieName,
+		Nonce:            utils.Nonce,
+		State:            utils.State,
 	}
 }
 
@@ -40,11 +40,11 @@ func (g *Github) InformUserAndOpenBrowser() error {
 	var url string
 	r, _ := http.NewRequest(http.MethodGet, host, nil)
 	q := r.URL.Query()
-	q.Add("client_id", utils2.ClientID)
-	q.Add("redirect_uri", utils2.RedirectUri)
+	q.Add("client_id", utils.ClientID)
+	q.Add("redirect_uri", utils.RedirectUri)
 	q.Add("state", g.State)
 	q.Add("nonce", g.Nonce)
-	url = fmt.Sprintf("%s/authorize?%s", utils2.ISSUER, q.Encode())
+	url = fmt.Sprintf("%s/authorize?%s", utils.ISSUER, q.Encode())
 	err := open.Run(url)
 	if err != nil {
 		return err
@@ -53,7 +53,7 @@ func (g *Github) InformUserAndOpenBrowser() error {
 }
 func (g *Github) ExchangeCode(w http.ResponseWriter, r *http.Request) (Exchange, error) {
 	// Check the state that was returned to the query string is the same as the above state
-	if r.URL.Query().Get("state") != utils2.State {
+	if r.URL.Query().Get("state") != utils.State {
 		fmt.Fprintln(w, "The state was not as expected")
 		return Exchange{}, nil
 	}
@@ -64,10 +64,10 @@ func (g *Github) ExchangeCode(w http.ResponseWriter, r *http.Request) (Exchange,
 	}
 	code := r.URL.Query().Get("code")
 
-	requestBodyMap := map[string]string{"client_id": utils2.ClientID, "client_secret": utils2.ClientSECRET, "code": code}
+	requestBodyMap := map[string]string{"client_id": utils.ClientID, "client_secret": utils.ClientSECRET, "code": code}
 	requestJSON, _ := json.Marshal(requestBodyMap)
 
-	url := fmt.Sprintf("%s/access_token", utils2.ISSUER)
+	url := fmt.Sprintf("%s/access_token", utils.ISSUER)
 	req, reqerr := http.NewRequest("POST", url, bytes.NewBuffer(requestJSON))
 	if reqerr != nil {
 		return Exchange{}, reqerr
@@ -83,7 +83,7 @@ func (g *Github) ExchangeCode(w http.ResponseWriter, r *http.Request) (Exchange,
 	var exchange Exchange
 	_ = json.Unmarshal(body, &exchange)
 
-	session, err := utils2.SessionStore.Get(r, utils2.CookieName)
+	session, err := utils.SessionStore.Get(r, utils.CookieName)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -98,10 +98,10 @@ func (g *Github) ExchangeCode(w http.ResponseWriter, r *http.Request) (Exchange,
 }
 func (g *Github) VerifyToken(t string) (*verifier.Jwt, error) {
 	tv := map[string]string{}
-	tv["nonce"] = utils2.Nonce
-	tv["aud"] = utils2.ClientID
+	tv["nonce"] = utils.Nonce
+	tv["aud"] = utils.ClientID
 	jv := verifier.JwtVerifier{
-		Issuer:           utils2.ISSUER,
+		Issuer:           utils.ISSUER,
 		ClaimsToValidate: tv,
 	}
 
@@ -118,7 +118,7 @@ func (g *Github) VerifyToken(t string) (*verifier.Jwt, error) {
 }
 func (g *Github) GetProfile(r *http.Request) (map[string]string, error) {
 	m := make(map[string]string)
-	session, err := utils2.SessionStore.Get(r, utils2.CookieName)
+	session, err := utils.SessionStore.Get(r, utils.CookieName)
 	if err != nil || session.Values["access_token"] == nil || session.Values["access_token"] == "" {
 		return m, errors.New("Please provide a valid access token")
 	}
@@ -141,8 +141,8 @@ func (g *Github) GetProfile(r *http.Request) (map[string]string, error) {
 }
 
 func init() {
-	utils2.SessionStore = sessions.NewCookieStore([]byte(utils2.CookieName))
-	utils2.SessionStore.Options = &sessions.Options{
+	utils.SessionStore = sessions.NewCookieStore([]byte(utils.CookieName))
+	utils.SessionStore.Options = &sessions.Options{
 		Path:     "/",      // to match all requests
 		MaxAge:   3600 * 1, // 1 hour
 		HttpOnly: true,

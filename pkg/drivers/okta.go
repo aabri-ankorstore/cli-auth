@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	utils2 "github.com/aabri-ankorstore/cli-auth/utils"
+	"github.com/aabri-ankorstore/cli-auth/pkg/utils"
 	"github.com/gorilla/sessions"
 	verifier "github.com/okta/okta-jwt-verifier-golang"
 	"github.com/rs/zerolog/log"
@@ -24,13 +24,13 @@ type Okta struct {
 }
 
 func NewOktaClient() Manager {
-	utils2.Nonce, _ = utils2.GenerateNonce()
-	utils2.State = utils2.GenerateState()
+	utils.Nonce, _ = utils.GenerateNonce()
+	utils.State = utils.GenerateState()
 	return &Okta{
-		SessionStore:     utils2.SessionStore,
-		SessionStoreName: utils2.CookieName,
-		Nonce:            utils2.Nonce,
-		State:            utils2.State,
+		SessionStore:     utils.SessionStore,
+		SessionStoreName: utils.CookieName,
+		Nonce:            utils.Nonce,
+		State:            utils.State,
 	}
 }
 func (g *Okta) InformUserAndOpenBrowser() error {
@@ -40,14 +40,14 @@ func (g *Okta) InformUserAndOpenBrowser() error {
 	var url string
 	r, _ := http.NewRequest(http.MethodGet, host, nil)
 	q := r.URL.Query()
-	q.Add("client_id", utils2.ClientID)
+	q.Add("client_id", utils.ClientID)
 	q.Add("response_type", "code")
 	q.Add("response_mode", "query")
 	q.Add("scope", "openid profile email")
-	q.Add("redirect_uri", utils2.RedirectUri)
+	q.Add("redirect_uri", utils.RedirectUri)
 	q.Add("state", g.State)
 	q.Add("nonce", g.Nonce)
-	url = fmt.Sprintf("%s/v1/authorize?%s", utils2.ISSUER, q.Encode())
+	url = fmt.Sprintf("%s/v1/authorize?%s", utils.ISSUER, q.Encode())
 	err := open.Run(url)
 	if err != nil {
 		return err
@@ -55,7 +55,7 @@ func (g *Okta) InformUserAndOpenBrowser() error {
 	return nil
 }
 func (g *Okta) ExchangeCode(w http.ResponseWriter, r *http.Request) (Exchange, error) {
-	if r.URL.Query().Get("state") != utils2.State {
+	if r.URL.Query().Get("state") != utils.State {
 		fmt.Fprintln(w, "The state was not as expected")
 		return Exchange{}, nil
 	}
@@ -67,14 +67,14 @@ func (g *Okta) ExchangeCode(w http.ResponseWriter, r *http.Request) (Exchange, e
 	code := r.URL.Query().Get("code")
 
 	authHeader := base64.StdEncoding.EncodeToString(
-		[]byte(fmt.Sprintf("%s:%s", utils2.ClientID, utils2.ClientSECRET)))
+		[]byte(fmt.Sprintf("%s:%s", utils.ClientID, utils.ClientSECRET)))
 
 	q := r.URL.Query()
 	q.Add("grant_type", "authorization_code")
 	q.Set("code", code)
-	q.Add("redirect_uri", utils2.RedirectUri)
+	q.Add("redirect_uri", utils.RedirectUri)
 
-	url := fmt.Sprintf("%s/v1/token?%s", utils2.ISSUER, q.Encode())
+	url := fmt.Sprintf("%s/v1/token?%s", utils.ISSUER, q.Encode())
 
 	req, _ := http.NewRequest("POST", url, bytes.NewReader([]byte("")))
 	h := req.Header
@@ -98,7 +98,7 @@ func (g *Okta) ExchangeCode(w http.ResponseWriter, r *http.Request) (Exchange, e
 	}
 
 	if verificationError == nil {
-		session, err := utils2.SessionStore.Get(r, utils2.CookieName)
+		session, err := utils.SessionStore.Get(r, utils.CookieName)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
@@ -114,10 +114,10 @@ func (g *Okta) ExchangeCode(w http.ResponseWriter, r *http.Request) (Exchange, e
 }
 func (g *Okta) VerifyToken(t string) (*verifier.Jwt, error) {
 	tv := map[string]string{}
-	tv["nonce"] = utils2.Nonce
-	tv["aud"] = utils2.ClientID
+	tv["nonce"] = utils.Nonce
+	tv["aud"] = utils.ClientID
 	jv := verifier.JwtVerifier{
-		Issuer:           utils2.ISSUER,
+		Issuer:           utils.ISSUER,
 		ClaimsToValidate: tv,
 	}
 
@@ -134,13 +134,13 @@ func (g *Okta) VerifyToken(t string) (*verifier.Jwt, error) {
 }
 func (g *Okta) GetProfile(r *http.Request) (map[string]string, error) {
 	m := make(map[string]string)
-	session, err := utils2.SessionStore.Get(r, utils2.CookieName)
+	session, err := utils.SessionStore.Get(r, utils.CookieName)
 	if err != nil || session.Values["access_token"] == nil || session.Values["access_token"] == "" {
 		return m, errors.New("please provide a valid access token")
 	}
 
 	token := session.Values["access_token"].(string)
-	reqUrl := fmt.Sprintf("%s/v1/userinfo", utils2.ISSUER)
+	reqUrl := fmt.Sprintf("%s/v1/userinfo", utils.ISSUER)
 	req, _ := http.NewRequest("GET", reqUrl, bytes.NewReader([]byte("")))
 	h := req.Header
 	h.Add("Authorization", fmt.Sprintf("Bearer %s", token))
@@ -154,8 +154,8 @@ func (g *Okta) GetProfile(r *http.Request) (map[string]string, error) {
 	return m, nil
 }
 func init() {
-	utils2.SessionStore = sessions.NewCookieStore([]byte(utils2.CookieName))
-	utils2.SessionStore.Options = &sessions.Options{
+	utils.SessionStore = sessions.NewCookieStore([]byte(utils.CookieName))
+	utils.SessionStore.Options = &sessions.Options{
 		Path:     "/",      // to match all requests
 		MaxAge:   3600 * 1, // 1 hour
 		HttpOnly: true,

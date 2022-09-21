@@ -2,8 +2,8 @@ package server
 
 import (
 	"fmt"
-	"github.com/aabri-ankorstore/cli-auth/server/handler"
-	"github.com/aabri-ankorstore/cli-auth/server/util/port"
+	"github.com/aabri-ankorstore/cli-auth/pkg/server/handler"
+	"github.com/aabri-ankorstore/cli-auth/pkg/server/util/port"
 	"github.com/go-errors/errors"
 	"net/http"
 	"strconv"
