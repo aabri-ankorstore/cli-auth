@@ -13,7 +13,7 @@ func (h *Auth) LogoutHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	// remove session
-	_ = os.Remove(utils.LockFile.Name())
+	_ = os.Remove(utils.LockFile)
 
 	delete(session.Values, "id_token")
 	delete(session.Values, "access_token")

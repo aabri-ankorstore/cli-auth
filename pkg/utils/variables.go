@@ -5,7 +5,6 @@ import (
 	"github.com/ankorstore/ankorstore-cli-core/pkg/plugin"
 	"github.com/gorilla/sessions"
 	"html/template"
-	"os"
 )
 
 var (
@@ -20,7 +19,7 @@ var (
 	CookieName   = "login-session-store"
 	State        = "none"
 	Nonce        = "NonceNotSetYet"
-	LockFile     *os.File
+	LockFile     string
 	PluginRepo   = "https://github.com/ankorstore/ankor-auth-plugin"
 	PluginPath   = plugin.Encode(PluginRepo)
 )

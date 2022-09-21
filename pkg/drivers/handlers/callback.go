@@ -14,10 +14,11 @@ func (h *Auth) CallBackHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// save access token
-	_, err := utils.CreateTmpFile()
+	file, err := utils.CreateTmpFile()
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
+	utils.LockFile = file.Name()
 	http.Redirect(w, r, "/", http.StatusFound)
 }
