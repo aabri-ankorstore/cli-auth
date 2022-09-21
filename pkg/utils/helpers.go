@@ -39,7 +39,7 @@ func IsAuthenticatedOffline() bool {
 		fmt.Printf("MATCH: [%s]\n", match)
 		return true
 	}
-	return true
+	return false
 }
 
 func RemoveAuth() {
