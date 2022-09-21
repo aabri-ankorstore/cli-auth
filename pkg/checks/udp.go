@@ -86,7 +86,7 @@ func (u *UdpProtocol) HandleClient() {
 	u.CheckError(err)
 }
 
-func Client() (string, error) {
+func Client() (bool, error) {
 	errChan := make(chan error, 0)
 	results := make(chan string, 0)
 	udpAddr, err := net.ResolveUDPAddr("udp4", ":1200")
@@ -104,7 +104,6 @@ func Client() (string, error) {
 			errChan <- err
 		}
 	}()
-
 	for {
 		// Receive Data
 		go func() {
@@ -117,10 +116,12 @@ func Client() (string, error) {
 		}()
 		select {
 		case err := <-errChan:
-			return "false", err
+			r, _ := strconv.ParseBool("false")
+			return r, err
 		case res := <-results:
-			fmt.Println(res)
-			os.Exit(0)
+			r, _ := strconv.ParseBool(res)
+			return r, nil
+			//os.Exit(0)
 		}
 	}
 }
