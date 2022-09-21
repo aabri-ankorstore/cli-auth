@@ -3,16 +3,44 @@ package udp
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/aabri-ankorstore/cli-auth/server/util/port"
+	"github.com/pkg/errors"
 	"net"
 	"os"
+	"strconv"
 )
 
 type Payload struct {
 	Message string `json:"message"`
 }
 
-func Run() {
-	udpAddr, err := net.ResolveUDPAddr("udp4", ":1200")
+// DefaultPort is the default port the ui server will listen to
+const DefaultPort = 1200
+
+func NewServer(host string, forcePort *int) error {
+	// Find an open port
+	usePort := DefaultPort
+	if forcePort != nil {
+		usePort = *forcePort
+		if host == "localhost" {
+			available, err := port.IsAvailable(fmt.Sprintf(":%d", usePort))
+			if !available {
+				return errors.Errorf("Port %d already in use: %v", usePort, err)
+			}
+		}
+	} else {
+		if host == "localhost" {
+			for i := 0; i < 20; i++ {
+				available, _ := port.IsAvailable(fmt.Sprintf(":%d", usePort))
+				if available {
+					break
+				}
+				usePort++
+			}
+		}
+	}
+
+	udpAddr, err := net.ResolveUDPAddr("udp4", fmt.Sprintf("%s:%s", host, strconv.Itoa(usePort)))
 	checkError(err)
 	conn, err := net.ListenUDP("udp", udpAddr)
 	checkError(err)
