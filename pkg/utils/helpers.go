@@ -18,16 +18,17 @@ func IsAuthenticated(r *http.Request) bool {
 }
 
 func CreateTmpFile() (*os.File, error) {
-	f, err := os.CreateTemp("ankorauth", "auth")
+	f, err := os.CreateTemp("", "auth")
 	if err != nil {
 		return nil, err
 	}
-	defer os.Remove(f.Name())
+	//defer os.Remove(f.Name())
 	fmt.Println(f.Name())
 	return f, nil
 }
 
 func IsAuthenticatedOffline() bool {
+	fmt.Println(LockFile.Name())
 	if _, err := os.Stat(LockFile.Name()); errors.Is(err, os.ErrNotExist) {
 		return false
 	}

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/aabri-ankorstore/cli-auth/pkg/utils"
 	"net/http"
-	"strings"
 )
 
 func (h *Auth) CallBackHandler(w http.ResponseWriter, r *http.Request) {
@@ -22,8 +21,4 @@ func (h *Auth) CallBackHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	utils.LockFile = file
 	http.Redirect(w, r, "/", http.StatusFound)
-}
-
-func empty(s string) bool {
-	return len(strings.TrimSpace(s)) == 0
 }
