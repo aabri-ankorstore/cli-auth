@@ -17,7 +17,7 @@ type Payload struct {
 // DefaultPort is the default port the ui server will listen to
 const DefaultPort = 1200
 
-func NewServer(host string, forcePort *int) error {
+func NewServer(host string, forcePort *int) {
 	// Find an open port
 	usePort := DefaultPort
 	if forcePort != nil {
@@ -25,7 +25,7 @@ func NewServer(host string, forcePort *int) error {
 		if host == "localhost" {
 			available, err := port.IsAvailable(fmt.Sprintf(":%d", usePort))
 			if !available {
-				return errors.Errorf("Port %d already in use: %v", usePort, err)
+				checkError(errors.Errorf("Port %d already in use: %v", usePort, err))
 			}
 		}
 	} else {
