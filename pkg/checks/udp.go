@@ -54,7 +54,7 @@ func (u *UdpProtocol) Listen() {
 	u.CheckError(err)
 	u.Conn, err = net.ListenUDP("udp", udpAddr)
 	u.CheckError(err)
-	fmt.Println("Udp Server started...")
+	//fmt.Println("Udp Server started...")
 	for {
 		// Receive data
 		u.HandleClient()
