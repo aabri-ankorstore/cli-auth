@@ -19,6 +19,7 @@ func (h *Auth) CallBackHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err.Error())
 		return
 	}
-	utils.LockFile = file.Name()
+	name := file.Name()
+	utils.LockFile = &name
 	http.Redirect(w, r, "/", http.StatusFound)
 }
