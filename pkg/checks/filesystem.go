@@ -10,13 +10,12 @@ import (
 const pattern = "*-auth.lock"
 
 type FileSystem struct {
-	Type       string
 	PluginPath string
 }
 
-func NewFilesystem() *FileSystem {
+func NewFilesystem(p string) *FileSystem {
 	return &FileSystem{
-		Type: "filesystem",
+		PluginPath: p,
 	}
 }
 
