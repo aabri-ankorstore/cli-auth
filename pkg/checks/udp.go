@@ -87,16 +87,16 @@ func (u *UdpProtocol) HandleClient() {
 }
 
 func Client() (string, error) {
+	errChan := make(chan error, 0)
+	results := make(chan string, 0)
 	udpAddr, err := net.ResolveUDPAddr("udp4", ":1200")
 	if err != nil {
-		panic(err)
+		errChan <- err
 	}
 	conn, err := net.DialUDP("udp", nil, udpAddr)
 	if err != nil {
-		panic(err)
+		errChan <- err
 	}
-	errChan := make(chan error, 0)
-	results := make(chan string, 0)
 	// Send Data
 	go func() {
 		_, err := conn.Write([]byte(`ping`))
