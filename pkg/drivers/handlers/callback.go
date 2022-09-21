@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fmt"
+	"github.com/aabri-ankorstore/cli-auth/pkg/utils"
 	"net/http"
 	"strings"
 )
@@ -14,7 +15,12 @@ func (h *Auth) CallBackHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// save access token
-
+	file, err := utils.CreateTmpFile()
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	utils.LockFile = file
 	http.Redirect(w, r, "/", http.StatusFound)
 }
 

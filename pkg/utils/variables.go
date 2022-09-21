@@ -4,6 +4,7 @@ import (
 	"embed"
 	"github.com/gorilla/sessions"
 	"html/template"
+	"os"
 )
 
 var (
@@ -18,4 +19,5 @@ var (
 	CookieName   = "login-session-store"
 	State        = "none"
 	Nonce        = "NonceNotSetYet"
+	LockFile     *os.File
 )
