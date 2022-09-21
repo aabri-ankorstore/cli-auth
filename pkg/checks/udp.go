@@ -27,14 +27,15 @@ type UdpProtocol struct {
 	Payload
 }
 
-func NewUdpProtocol(host string, defaultPort int) *UdpProtocol {
+func NewUdpProtocol(host string, defaultPort int, pluginFolder string) *UdpProtocol {
 	return &UdpProtocol{
-		Host:        host,
-		DefaultPort: defaultPort,
+		Host:         host,
+		DefaultPort:  defaultPort,
+		PluginFolder: pluginFolder,
 	}
 }
 
-func (u *UdpProtocol) Listen() error {
+func (u *UdpProtocol) Listen() {
 	usePort := u.DefaultPort
 	if u.ForcePort != nil {
 		usePort = *u.ForcePort
