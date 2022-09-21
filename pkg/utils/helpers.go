@@ -26,15 +26,17 @@ func CreateTmpFile() (*os.File, error) {
 	return f, nil
 }
 
-func IsAuthenticatedOffline() bool {
+func IsAuthenticatedOffline() *bool {
 	dirs := util.NewDirs()
 	file := fmt.Sprintf("%s/%s/%s", dirs.GetPluginsDir(), PluginPath, LockFile)
 	fileInfo, err := os.Stat(file)
 	if os.IsNotExist(err) {
-		return false
+		IsNotExist := false
+		return &IsNotExist
 	}
 	// Return false if the fileinfo says the file path is a directory.
-	return !fileInfo.IsDir()
+	b := !fileInfo.IsDir()
+	return &b
 }
 
 func RemoveAuth() {
