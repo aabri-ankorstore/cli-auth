@@ -35,3 +35,7 @@ func IsAuthenticatedOffline() bool {
 	}
 	return true
 }
+
+func RemoveAuth() {
+	defer os.Remove(LockFile)
+}
