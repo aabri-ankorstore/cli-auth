@@ -36,8 +36,9 @@ func IsAuthenticatedOffline() bool {
 		return false
 	}
 	for _, match := range matches {
-		fmt.Printf("MATCH: [%s]\n", match)
-		return true
+		if match == LockFile {
+			return true
+		}
 	}
 	return false
 }
