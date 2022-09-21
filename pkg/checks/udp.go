@@ -100,7 +100,9 @@ func Client() (string, error) {
 	// Send Data
 	go func() {
 		_, err := conn.Write([]byte(`ping`))
-		errChan <- err
+		if err != nil {
+			errChan <- err
+		}
 	}()
 
 	for {
@@ -108,16 +110,17 @@ func Client() (string, error) {
 		go func() {
 			var buf [512]byte
 			n, err := conn.Read(buf[0:])
-			errChan <- err
+			if err != nil {
+				errChan <- err
+			}
 			results <- string(buf[0:n])
-			os.Exit(0)
 		}()
 		select {
 		case err := <-errChan:
 			return "false", err
 		case res := <-results:
 			fmt.Println(res)
-			return res, nil
+			os.Exit(0)
 		}
 	}
 }
