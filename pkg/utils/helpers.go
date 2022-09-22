@@ -9,6 +9,10 @@ import (
 	"path/filepath"
 )
 
+type AuthStatus struct {
+	IsConnected bool `json:"is_connected"`
+}
+
 func IsAuthenticated(r *http.Request) bool {
 	session, err := SessionStore.Get(r, CookieName)
 	if err != nil || session.Values["access_token"] == nil || session.Values["access_token"] == "" {

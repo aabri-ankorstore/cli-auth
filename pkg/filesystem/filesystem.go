@@ -1,8 +1,10 @@
 package filesystem
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/aabri-ankorstore/cli-auth/pkg/utils"
+	"github.com/ankorstore/ankorstore-cli-core/pkg/plugin"
 	"os"
 )
 
@@ -19,9 +21,20 @@ func NewFilesystem(p string) *FileSystem {
 }
 
 func (f *FileSystem) CreateTmpFile() (string, error) {
-	plugin := fmt.Sprintf("%s/%s", f.PluginFolder, utils.PluginPath)
-	file, err := os.CreateTemp(plugin, Pattern)
-	f.CheckError(err)
+	p := fmt.Sprintf("%s/%s", f.PluginFolder, utils.PluginPath)
+	file, err := os.CreateTemp(p, Pattern)
+	if err != nil {
+		return "", err
+	}
+	status := utils.AuthStatus{
+		IsConnected: true,
+	}
+	statusByte, _ := json.Marshal(status)
+	jsonContent := string(statusByte)
+	_, err = file.WriteString(plugin.Encode(jsonContent))
+	if err != nil {
+		return "", err
+	}
 	return file.Name(), nil
 }
 
