@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"fmt"
-	"github.com/aabri-ankorstore/cli-auth/pkg/checks"
+	"github.com/aabri-ankorstore/cli-auth/pkg/filesystem"
 	"github.com/aabri-ankorstore/cli-auth/pkg/utils"
 	"github.com/ankorstore/ankorstore-cli-core/pkg/util"
 	"net/http"
@@ -17,7 +17,7 @@ func (h *Auth) CallBackHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	// save access token
 	dir := util.NewDirs()
-	f := checks.NewFilesystem(dir.GetPluginsDir())
+	f := filesystem.NewFilesystem(dir.GetPluginsDir())
 
 	file, err := f.CreateTmpFile()
 	f.CheckError(err)

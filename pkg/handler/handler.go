@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"github.com/aabri-ankorstore/cli-auth/pkg/server/util/portforward"
+	"github.com/aabri-ankorstore/cli-auth/pkg/portforward"
 	"github.com/gorilla/mux"
 	"net/http"
 )

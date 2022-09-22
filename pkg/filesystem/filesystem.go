@@ -1,4 +1,4 @@
-package checks
+package filesystem
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-const pattern = "*-auth.lock"
+const Pattern = "*-auth.lock"
 
 type FileSystem struct {
 	PluginFolder string
@@ -20,7 +20,7 @@ func NewFilesystem(p string) *FileSystem {
 
 func (f *FileSystem) CreateTmpFile() (string, error) {
 	plugin := fmt.Sprintf("%s/%s", f.PluginFolder, utils.PluginPath)
-	file, err := os.CreateTemp(plugin, pattern)
+	file, err := os.CreateTemp(plugin, Pattern)
 	f.CheckError(err)
 	return file.Name(), nil
 }

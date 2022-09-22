@@ -1,8 +1,9 @@
-package checks
+package udp
 
 import (
 	"fmt"
-	"github.com/aabri-ankorstore/cli-auth/pkg/server/util/port"
+	"github.com/aabri-ankorstore/cli-auth/pkg/filesystem"
+	"github.com/aabri-ankorstore/cli-auth/pkg/port"
 	"github.com/aabri-ankorstore/cli-auth/pkg/utils"
 	"github.com/pkg/errors"
 	"net"
@@ -54,7 +55,6 @@ func (u *UdpProtocol) Listen() {
 	u.CheckError(err)
 	u.Conn, err = net.ListenUDP("udp", udpAddr)
 	u.CheckError(err)
-	//fmt.Println("Udp Server started...")
 	for {
 		// Receive data
 		u.HandleClient()
@@ -62,20 +62,13 @@ func (u *UdpProtocol) Listen() {
 }
 
 func (u *UdpProtocol) IsAuth() bool {
-	file := fmt.Sprintf("%s/%s/%s", u.PluginFolder, utils.PluginPath, pattern)
+	file := fmt.Sprintf("%s/%s/%s", u.PluginFolder, utils.PluginPath, filesystem.Pattern)
 	matches, err := filepath.Glob(file)
 	u.CheckError(err)
 	if len(matches) > 0 {
 		return true
 	}
 	return false
-}
-
-func (u *UdpProtocol) CheckError(err error) {
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Fatal error ", err.Error())
-		os.Exit(1)
-	}
 }
 
 func (u *UdpProtocol) HandleClient() {
@@ -86,42 +79,9 @@ func (u *UdpProtocol) HandleClient() {
 	u.CheckError(err)
 }
 
-func Client() (bool, error) {
-	errChan := make(chan error, 0)
-	results := make(chan string, 0)
-	udpAddr, err := net.ResolveUDPAddr("udp4", fmt.Sprintf("%s:%d", "localhost", 1200))
+func (u *UdpProtocol) CheckError(err error) {
 	if err != nil {
-		errChan <- err
-	}
-	conn, err := net.DialUDP("udp", nil, udpAddr)
-	if err != nil {
-		errChan <- err
-	}
-	// Send Data
-	go func() {
-		_, err := conn.Write([]byte(`ping`))
-		if err != nil {
-			errChan <- err
-		}
-	}()
-	for {
-		// Receive Data
-		go func() {
-			var buf [512]byte
-			n, err := conn.Read(buf[0:])
-			if err != nil {
-				errChan <- err
-			}
-			results <- string(buf[0:n])
-		}()
-		select {
-		case err := <-errChan:
-			r, _ := strconv.ParseBool("false")
-			return r, err
-		case res := <-results:
-			r, _ := strconv.ParseBool(res)
-			return r, nil
-			//os.Exit(0)
-		}
+		fmt.Fprintf(os.Stderr, "Fatal error ", err.Error())
+		os.Exit(1)
 	}
 }

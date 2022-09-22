@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"github.com/aabri-ankorstore/cli-auth/pkg/checks"
+	"github.com/aabri-ankorstore/cli-auth/pkg/filesystem"
 	"github.com/aabri-ankorstore/cli-auth/pkg/utils"
 	"github.com/ankorstore/ankorstore-cli-core/pkg/util"
 	"net/http"
@@ -16,7 +16,7 @@ func (h *Auth) LogoutHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	// remove session
 	dir := util.NewDirs()
-	f := checks.NewFilesystem(dir.GetPluginsDir())
+	f := filesystem.NewFilesystem(dir.GetPluginsDir())
 	f.RemoveFile()
 
 	delete(session.Values, "id_token")
