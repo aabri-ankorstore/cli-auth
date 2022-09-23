@@ -50,7 +50,7 @@ func (f *FileSystem) CheckError(err error) {
 	}
 }
 
-func (f *FileSystem) isAlreadyAuthenticated() bool {
+func (f *FileSystem) IsAlreadyAuthenticated() bool {
 	pattern := "*-auth.lock"
 	p := fmt.Sprintf("%s/%s", f.PluginFolder, utils.PluginPath)
 	file := fmt.Sprintf("%s/%s", p, pattern)
