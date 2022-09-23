@@ -6,6 +6,7 @@ import (
 	"github.com/aabri-ankorstore/cli-auth/pkg/utils"
 	"github.com/ankorstore/ankorstore-cli-core/pkg/plugin"
 	"os"
+	"path/filepath"
 )
 
 const Pattern = "*-auth.lock"
@@ -47,4 +48,18 @@ func (f *FileSystem) CheckError(err error) {
 		fmt.Fprintf(os.Stderr, "Fatal error ", err.Error())
 		os.Exit(1)
 	}
+}
+
+func (f *FileSystem) isAlreadyAuthenticated() bool {
+	pattern := "*-auth.lock"
+	p := fmt.Sprintf("%s/%s", f.PluginFolder, utils.PluginPath)
+	file := fmt.Sprintf("%s/%s", p, pattern)
+	matches, err := filepath.Glob(file)
+	if err != nil {
+		return false
+	}
+	if len(matches) > 0 {
+		return true
+	}
+	return false
 }
