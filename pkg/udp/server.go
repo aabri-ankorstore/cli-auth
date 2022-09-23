@@ -7,6 +7,7 @@ import (
 	"github.com/aabri-ankorstore/cli-auth/pkg/port"
 	"github.com/aabri-ankorstore/cli-auth/pkg/utils"
 	"github.com/ankorstore/ankorstore-cli-core/pkg/plugin"
+	"github.com/ankorstore/ankorstore-cli-core/pkg/util"
 	"github.com/pkg/errors"
 	"net"
 	"os"
@@ -24,7 +25,9 @@ type UdpProtocol struct {
 	PluginFolder string
 }
 
-func NewUdpProtocol(host string, defaultPort int, pluginFolder string) *UdpProtocol {
+func NewUdpProtocol(host string, defaultPort int) *UdpProtocol {
+	dir := util.NewDirs()
+	pluginFolder := dir.GetPluginsDir()
 	return &UdpProtocol{
 		Host:         host,
 		DefaultPort:  defaultPort,
