@@ -54,9 +54,8 @@ func (f *FileSystem) CheckError(err error) {
 }
 
 func (f *FileSystem) IsAlreadyAuthenticated() bool {
-	pattern := "*-auth.lock"
 	p := fmt.Sprintf("%s/%s", f.PluginFolder, utils.PluginPath)
-	file := fmt.Sprintf("%s/%s", p, pattern)
+	file := fmt.Sprintf("%s/%s", p, Pattern)
 	matches, err := filepath.Glob(file)
 	if err != nil {
 		return false
@@ -65,4 +64,16 @@ func (f *FileSystem) IsAlreadyAuthenticated() bool {
 		return true
 	}
 	return false
+}
+
+func (f *FileSystem) CleanUp() {
+	p := fmt.Sprintf("%s/%s", f.PluginFolder, utils.PluginPath)
+	file := fmt.Sprintf("%s/%s", p, Pattern)
+	matches, err := filepath.Glob(file)
+	f.CheckError(err)
+	if len(matches) > 0 {
+		for _, fl := range matches {
+			f.CheckError(os.Remove(fl))
+		}
+	}
 }
