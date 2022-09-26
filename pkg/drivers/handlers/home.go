@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"github.com/aabri-ankorstore/cli-auth/pkg/utils"
-	"log"
+	"github.com/rs/zerolog/log"
 	"net/http"
 )
 
@@ -18,6 +18,6 @@ func (h *Auth) HomeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	err := utils.View.ExecuteTemplate(w, "home.gohtml", data)
 	if err != nil {
-		log.Fatalln(err)
+		log.Trace().Msg(err.Error())
 	}
 }

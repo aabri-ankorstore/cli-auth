@@ -400,7 +400,7 @@ func (pf *PortForwarder) handleConnection(conn io.ReadWriteCloser, port Forwarde
 	go func() {
 		// Copy from the remote side to the local port.
 		if _, err := io.Copy(conn, dataStream); err != nil && !strings.Contains(err.Error(), "use of closed network connection") {
-			log.Error().Msgf("error copying from remote stream to local connection: %v", err)
+			log.Trace().Msgf("error copying from remote stream to local connection: %v", err)
 			//pf.raiseError(fmt.Errorf("error copying from remote stream to local connection: %v", err))
 			// runtime.HandleError(fmt.Errorf("error copying from remote stream to local connection: %v", err))
 		}
@@ -415,7 +415,7 @@ func (pf *PortForwarder) handleConnection(conn io.ReadWriteCloser, port Forwarde
 
 		// Copy from the local port to the remote side.
 		if _, err := io.Copy(dataStream, conn); err != nil && !strings.Contains(err.Error(), "use of closed network connection") {
-			log.Error().Msgf("error copying from local connection to remote stream: %v", err)
+			log.Trace().Msgf("error copying from local connection to remote stream: %v", err)
 			//pf.raiseError(fmt.Errorf("error copying from local connection to remote stream: %v", err))
 			// runtime.HandleError(fmt.Errorf("error copying from local connection to remote stream: %v", err))
 			// break out of the select below without waiting for the other copy to finish
@@ -436,7 +436,7 @@ func (pf *PortForwarder) handleConnection(conn io.ReadWriteCloser, port Forwarde
 		if strings.Contains(err.Error(), "container") {
 			pf.raiseError(err)
 		} else {
-			log.Error().Err(err)
+			log.Trace().Msg(err.Error())
 		}
 	}
 }
