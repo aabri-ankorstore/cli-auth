@@ -9,7 +9,6 @@ import (
 	"github.com/aabri-ankorstore/cli-auth/pkg/utils"
 	"github.com/gorilla/sessions"
 	verifier "github.com/okta/okta-jwt-verifier-golang"
-	"github.com/rs/zerolog/log"
 	"github.com/skratchdot/open-golang/open"
 	"io/ioutil"
 	"net/http"
@@ -34,7 +33,7 @@ func NewOktaClient() Manager {
 	}
 }
 func (g *Okta) InformUserAndOpenBrowser() error {
-	log.Info().Msg("Opening browser for code entry...")
+	fmt.Println("Opening browser for code entry...")
 	// Wait a few seconds to give user a chance to check out the printed user code.
 	time.Sleep(3 * time.Second)
 	var url string
