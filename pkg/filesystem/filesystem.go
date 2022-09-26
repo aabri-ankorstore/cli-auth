@@ -40,7 +40,10 @@ func (f *FileSystem) CreateTmpFile() (string, error) {
 }
 
 func (f *FileSystem) RemoveFile() {
-	f.CheckError(os.Remove(utils.LockFile))
+	_, error := os.Stat(utils.LockFile)
+	if !os.IsNotExist(error) {
+		f.CheckError(os.Remove(utils.LockFile))
+	}
 }
 
 func (f *FileSystem) CheckError(err error) {
