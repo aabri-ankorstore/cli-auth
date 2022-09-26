@@ -2,8 +2,6 @@ package shell
 
 import (
 	"bufio"
-	"fmt"
-	"github.com/ankorstore/ankorstore-cli-core/pkg/util"
 	"github.com/fatih/color"
 	"os"
 )
@@ -13,7 +11,7 @@ func NewShell(f func(commandStr string) error) error {
 	for {
 		cyan := color.New(color.FgCyan)
 		boldCyan := cyan.Add(color.Bold)
-		_, err := boldCyan.Print(fmt.Sprintf("➜ %s: ", util.AppName))
+		_, err := boldCyan.Print("➜ ")
 		if err != nil {
 			return err
 		}
